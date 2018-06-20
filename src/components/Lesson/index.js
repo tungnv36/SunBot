@@ -100,6 +100,7 @@ export default class Lesson extends Component {
         const key = navigation.getParam('key', '0');
         const index = navigation.getParam('index', '0');
         const description = navigation.getParam('description', '');
+        const content = navigation.getParam('content', '');
         return (
             <ImageBackground
                 style={styles.container}
@@ -156,7 +157,9 @@ export default class Lesson extends Component {
                     >
                         <TouchableOpacity
                             style={styles.menuButton}
-                            onPress={() => navigate('Slide')}
+                            onPress={() => navigate('Slide', {
+                                content
+                            })}
                         >
                             <Image
                                 style={{

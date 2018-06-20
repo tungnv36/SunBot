@@ -67,7 +67,7 @@ export default class LessonList extends Component {
         const taskGet = await api.getLesson(key)
         var items = []
         if (taskGet.ok) {
-            console.log('taskGet', taskGet.data)
+            console.log('taskGet A', taskGet.data)
             var data = taskGet.data
             if (data === null) {
                 setTimeout(() => {
@@ -80,6 +80,7 @@ export default class LessonList extends Component {
                         name: data[i].name,
                         background: data[i].background,
                         description: data[i].description,
+                        content: data[i].content
                     })
                 }
                 console.log('items', items)
@@ -169,7 +170,8 @@ export default class LessonList extends Component {
                                     onPress={() => navigate('Lesson', {
                                         key: item.key,
                                         description: item.description,
-                                        index: index + 1
+                                        index: index + 1,
+                                        content: item.content
                                     })}
                                 >
                                     <ImageBackground

@@ -4,8 +4,10 @@ import {
     WebView,
     TouchableOpacity,
     StyleSheet,
-    Image
+    Image,
+    Dimensions
 } from 'react-native'
+import HTML from 'react-native-render-html';
 
 export default class Slide extends Component {
     constructor(props) {
@@ -14,13 +16,20 @@ export default class Slide extends Component {
 
     render() {
         const { goBack } = this.props.navigation
+        const { navigation } = this.props;
+        const content = navigation.getParam('content', '');
         return (
             <View
                 style={styles.constain}
             >
-                <WebView
+                {/* <WebView
                     style={styles.constain}
                     source={{uri: 'http://www.lavazza.com/en/lavazza-world/photography/'}}
+                /> */}
+                <HTML 
+                    style={styles.constain}
+                    html={content}
+                    imagesMaxWidth={Dimensions.get('window').width} 
                 />
                 <TouchableOpacity
                     style={styles.buttonBack}
@@ -45,8 +54,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 10,
         left: 10,
-        width: 40,
-        height: 40
+        width: 30,
+        height: 30
     },
     imageStyle: {
         width: '100%',
