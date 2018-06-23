@@ -275,6 +275,6 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '30%',
         marginBottom: 2,
-        marginTop: 2
+        marginTop: 2,
     }
 });
