@@ -70,7 +70,7 @@ export default class Courses extends Component {
         const taskGet = await api.getCourses()
         var items = []
         if (taskGet.ok) {
-            // console.log('taskGet', taskGet.data)
+            console.log('taskGet', taskGet.data)
             var data = taskGet.data
             if (data === null) {
                 setTimeout(() => {
@@ -146,6 +146,18 @@ export default class Courses extends Component {
                                     source={require('../../assets/stone.png')}
                                     resizeMode='stretch'
                                 >
+                                    {item.background === '' ?
+                                    <View
+                                        style={{
+                                            width: '50%',
+                                            height: '40%',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            backgroundColor: '#FFF',
+                                            borderRadius: 5
+                                        }}
+                                    />
+                                    :
                                     <Image
                                         style={{
                                             width: '50%',
@@ -158,6 +170,7 @@ export default class Courses extends Component {
                                         source={{ uri: item.background }}
                                         resizeMode='cover'
                                     />
+                                    }
                                     <Text
                                         style={{
                                             height: '30%',

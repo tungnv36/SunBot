@@ -40,22 +40,22 @@ export default class LessonList extends Component {
     componentWillMount() {
         this.getLesson()
         // setTimeout(() => {
-            Animated.spring(
-                this.state.bottomSunBot,
-                {
-                    toValue: 1,
-                    bounciness: 15,
-                    useNativeDriver: true
-                }
-            ).start()
-            Animated.spring(
-                this.state.scaleItem,
-                {
-                    toValue: 1,
-                    bounciness: 15,
-                    useNativeDriver: true
-                }
-            ).start()
+        Animated.spring(
+            this.state.bottomSunBot,
+            {
+                toValue: 1,
+                bounciness: 15,
+                useNativeDriver: true
+            }
+        ).start()
+        Animated.spring(
+            this.state.scaleItem,
+            {
+                toValue: 1,
+                bounciness: 15,
+                useNativeDriver: true
+            }
+        ).start()
         // }, 500)
     }
 
@@ -163,7 +163,7 @@ export default class LessonList extends Component {
                             ({ item, index }) => (
                                 <TouchableOpacity
                                     style={[styles.row, {
-                                        transform:[{
+                                        transform: [{
                                             scale: this.state.scaleItem
                                         }]
                                     }]}
@@ -179,18 +179,31 @@ export default class LessonList extends Component {
                                         source={require('../../assets/stone.png')}
                                         resizeMode='stretch'
                                     >
-                                        <Image
-                                            style={{
-                                                width: '50%',
-                                                height: '40%',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                backgroundColor: '#FFF',
-                                                borderRadius: 5
-                                            }}
-                                            source={{ uri: item.background }}
-                                            resizeMode='cover'
-                                        />
+                                        {item.background === '' ?
+                                            <View
+                                                style={{
+                                                    width: '50%',
+                                                    height: '40%',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    backgroundColor: '#FFF',
+                                                    borderRadius: 5
+                                                }}
+                                            />
+                                            :
+                                            <Image
+                                                style={{
+                                                    width: '50%',
+                                                    height: '40%',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    backgroundColor: '#FFF',
+                                                    borderRadius: 5
+                                                }}
+                                                source={{ uri: item.background }}
+                                                resizeMode='cover'
+                                            />
+                                        }
                                         <Text
                                             style={{
                                                 height: '30%',

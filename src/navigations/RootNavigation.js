@@ -2,7 +2,7 @@ import { StackNavigator } from 'react-navigation';
 import Courses from '../components/Courses/index'
 import LessonList from '../components/LessonList/index'
 import Lesson from '../components/Lesson/index'
-import GamePlay from '../components/GamePlay/index'
+import GamePlay from '../components/GamePlay/index2'
 import Slide from '../components/Slide/index'
 import PlayVideo from '../components/PlayVideo/index'
 
