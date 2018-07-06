@@ -645,7 +645,9 @@ export default class GamePlay extends Component {
     goTop() {
         var arr = this.state.itemGo
         var item = this.state.firstData
-        console.log('JJJ', item)
+        if(item.c === undefined || item.r === undefined) {
+            return
+        }
         if (arr.length > 0) {
             var item = arr[arr.length - 1]
         }
@@ -683,6 +685,9 @@ export default class GamePlay extends Component {
     goLeft() {
         var arr = this.state.itemGo
         var item = this.state.firstData
+        if(item.c === undefined || item.r === undefined) {
+            return
+        }
         if (arr.length > 0) {
             item = arr[arr.length - 1]
         }
@@ -702,6 +707,9 @@ export default class GamePlay extends Component {
     goRight() {
         var arr = this.state.itemGo
         var item = this.state.firstData
+        if(item.c === undefined || item.r === undefined) {
+            return
+        }
         if (arr.length > 0) {
             item = arr[arr.length - 1]
         }
@@ -721,6 +729,9 @@ export default class GamePlay extends Component {
     goBottom() {
         var arr = this.state.itemGo
         var item = this.state.firstData
+        if(item.c === undefined || item.r === undefined) {
+            return
+        }
         if (arr.length > 0) {
             var item = arr[arr.length - 1]
         }
@@ -1179,7 +1190,7 @@ export default class GamePlay extends Component {
                         zIndex: 2,
                         transform: [{ rotate: interpolateRotation }]
                     }}
-                    source={this.state.src[this.state.level - 1] === '' ? require('../../../assets/sunbot.png') : { uri: this.state.src[this.state.level - 1] }}
+                    source={this.state.src[this.state.level - 1] === '' ? require('../../../assets/sunbot-icon.png') : { uri: this.state.src[this.state.level - 1] }}
                     // source={{ uri: `${this.state.impediments[]}?w=${w}&h=${h}` }}
                     resizeMode='cover'
                 >

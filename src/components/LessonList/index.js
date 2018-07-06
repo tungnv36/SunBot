@@ -222,10 +222,10 @@ export default class LessonList extends Component {
                                         <Text
                                             style={{
                                                 height: '25%',
-                                                paddingTop: 12,
-                                                fontSize: 18,
+                                                paddingTop: 18,
+                                                fontSize: 16,
                                                 color: '#8A3618',
-                                                fontFamily: 'Pacifico'
+                                                fontFamily: 'zorque'
                                             }}
                                         >
                                             {`Bài ${index + 1}`}
