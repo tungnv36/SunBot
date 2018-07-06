@@ -32,7 +32,7 @@ export default class PlayVideo extends Component {
                             height: 30
                         }}
                         resizeMode='contain'
-                        source={require('../../assets/ic-stone-close.png')}
+                        source={require('../../../assets/new-delete.png')}
                     />
                 </TouchableOpacity>
                 <WebView

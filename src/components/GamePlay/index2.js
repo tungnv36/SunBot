@@ -33,11 +33,13 @@ const wBot = 3 * h / 4//9 * (Dimensions.get('window').height - 10) / 80
 const hBot = 3 * h / 4//8 * (Dimensions.get('window').height - 45) / 80
 const numberOfWidth = 8
 const numberOfHeight = 8
+const sunBotType = 1
+const finishType = 2
+const vatCanType = 3
 
 class DrawSquare extends Component {
     constructor(props) {
         super(props);
-        PlaySoundRepeat('sound')
     }
 
     componentWillMount() {
@@ -66,32 +68,56 @@ class DrawSquare extends Component {
                     justifyContent: 'center',
                 }}
             >
-                {this.props.type === 100 || this.props.img === '' || this.props.img === ' ' ?
+                {this.props.type === 100 || this.props.type === sunBotType || this.props.img === '' || this.props.img === ' ' ?
                     <View
                         style={{
-                            width: w - 2,
-                            height: h - 2,
-                            backgroundColor: this.props.row % 2 === 0 ? this.props.index % 2 === 0 ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.6)' : this.props.index % 2 === 0 ? 'rgba(255, 255, 255, 0.6)' : 'rgba(255, 255, 255, 0.3)',
-                            margin: 5,
-                            borderRadius: 5
-                        }}
-                    /> :
-                    <View
-                        style={{
-                            width: w - 2,
-                            height: h - 2,
-                            backgroundColor: this.props.row % 2 === 0 ? this.props.index % 2 === 0 ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.6)' : this.props.index % 2 === 0 ? 'rgba(255, 255, 255, 0.6)' : 'rgba(255, 255, 255, 0.3)',
-                            margin: 5,
+                            width: w,
+                            height: h,
                             borderRadius: 5
                         }}
                     >
+                        <View
+                            style={{
+                                width: w - 2,
+                                height: h - 2,
+                                backgroundColor: this.props.row % 2 === 0 ? this.props.index % 2 === 0 ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.6)' : this.props.index % 2 === 0 ? 'rgba(255, 255, 255, 0.6)' : 'rgba(255, 255, 255, 0.3)',
+                                // margin: 5,
+                                borderRadius: 5
+                            }}
+                        />
+                    </View> :
+                    <View
+                        style={{
+                            width: w,
+                            height: h,
+                            borderRadius: 5
+                        }}
+                    >
+                        {/* <View
+                            style={{
+                                width: w,
+                                height: h,
+                                backgroundColor: this.props.row % 2 === 0 ? this.props.index % 2 === 0 ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.6)' : this.props.index % 2 === 0 ? 'rgba(255, 255, 255, 0.6)' : 'rgba(255, 255, 255, 0.3)',
+                                position: 'absolute',
+                                left: -1,
+                                top: -1,
+                                bottom: 1,
+                                right: 1,
+                                borderRadius: 5
+                            }}
+                        /> */}
                         <Image
                             style={{
-                                width: '100%',
-                                height: '100%'
+                                width: w,
+                                height: h,
+                                position: 'absolute',
+                                left: -1,
+                                top: -1,
+                                bottom: 1,
+                                right: 1
                             }}
                             source={{ uri: `${this.props.img}?w=${w}&h=${h}` }}
-                            resizeMode='contain'
+                            resizeMode='stretch'
                         />
                     </View>
                 }
@@ -108,10 +134,10 @@ export default class GamePlay extends Component {
         super(props)
         this.state = {
             impediments: [],
-            itemGo: [],//[{ key: '0', style: 'first', c: 0, r: 0, d: 0, src: require('../../assets/ic-up.png') }],
+            itemGo: [],//[{ key: '0', style: 'first', c: 0, r: 0, d: 0, src: require('../../../assets/ic-up.png') }],
             numOfCol: 8,
-            posBeginX: 0,
-            posBeginY: 0,
+            posBeginX: [],
+            posBeginY: [],
             posBotX: new Animated.Value(w * 0 + w / 2 - wBot / 2 + startX),
             posBotY: new Animated.Value(h * 0 + h / 2 - hBot / 2 + startY),
             posSelected: new Animated.Value(0),
@@ -124,17 +150,30 @@ export default class GamePlay extends Component {
             points: '',
             isPlay: true,
             count: 0,
-            src: ''
+            src: [],
+            level: 1,
+            isMounted: false
         }
         this.deg = new Animated.Value(0);
+        PlaySoundRepeat('sound')
     }
 
     componentWillMount() {
-        this.initArray()
+        this.setState({
+            isMounted: false,
+        })
     }
 
-    initArray() {
-        var items = []
+    componentDidMount() {
+        this.setState({
+            isMounted: true,
+        })
+        this.getMap()
+        // this.initArray()
+    }
+
+    initArray(items) {
+        // var items = []
         for (let i = 0; i < 64; i++) {
             items.push({
                 id: (new Date()).getTime() + i,
@@ -144,18 +183,19 @@ export default class GamePlay extends Component {
                 type: 100
             })
         }
-        this.getMap(items)
+        // return items
+        // this.getMap(items)
     }
 
-    getMap = async (impediments) => {
+    getMap = async () => {//impediments
         const { navigation } = this.props;
         const key = navigation.getParam('lessonId', '0');
-        console.log('key', key)
+        console.log('KKKK', '\\')
         const api = CallApi.createAPI()
         const taskGet = await api.getMap(key)
-        // var items = []
-        var posX = 0
-        var posY = 0
+        var posX = []
+        var posY = []
+        var src = []
         if (taskGet.ok) {
             console.log('taskGetMap', taskGet.data)
             var data = taskGet.data
@@ -164,46 +204,72 @@ export default class GamePlay extends Component {
                     alert('Không có khoá học nào')
                 })
             } else {
-                for (let i = 0; i < data.impediments.length; i++) {
-                    impediments.splice(data.impediments[i].indexOfCell, 1, {
-                        id: data.impediments[i].id,
-                        imageUrl: data.impediments[i].imageUrl,
-                        indexOfCell: data.impediments[i].indexOfCell,
-                        mapId: data.impediments[i].mapId,
-                        type: data.impediments[i].type !== undefined ? data.impediments[i].type : 1
-                    })
-                    if (data.impediments[i].type === undefined || data.impediments[i].type === 1) {
-                        posX = data.impediments[i].indexOfCell % this.state.numOfCol
-                        posY = parseInt(data.impediments[i].indexOfCell / this.state.numOfCol)
-                        src = `${data.impediments[i].imageUrl}?w=${w}&h=${h}`
+                var items = []
+                for (let i = 0; i < data.length; i++) {
+                    var item = []
+                    for (let i = 0; i < 64; i++) {
+                        item.push({
+                            id: (new Date()).getTime() + i,
+                            imageUrl: '',
+                            indexOfCell: i,
+                            mapId: this.props.lessonId,
+                            type: 100
+                        })
                     }
-                }
-                this.setState({
-                    impediments,
-                    // isLoading: false,
-                    posBeginX: posX,
-                    posBeginY: posY,
-                    firstData: { key: '0', style: 'first', c: posX, r: posY, d: 0, src: require('../../assets/ic-up.png') },
-                }, () => {
-                    console.log('impediments2', this.state.impediments)
-                })
-                setTimeout(() => {
-                    this.setState({
-                        isLoading: false,
+
+                    for (let j = 0; j < data[i].impediments.length; j++) {
+                        item.splice(data[i].impediments[j].indexOfCell, 1, {
+                            id: data[i].impediments[j].id,
+                            imageUrl: data[i].impediments[j].imageUrl,
+                            indexOfCell: data[i].impediments[j].indexOfCell,
+                            mapId: data[i].impediments[j].mapId,
+                            type: data[i].impediments[j].type !== undefined ? data[i].impediments[j].type : sunBotType
+                        })
+                        console.log('HHHH: ', data[i].impediments[j])
+                        if (data[i].impediments[j].type === undefined || data[i].impediments[j].type === sunBotType) {
+                            posX.push(data[i].impediments[j].indexOfCell % this.state.numOfCol)
+                            posY.push(parseInt(data[i].impediments[j].indexOfCell / this.state.numOfCol))
+                            src.push(`${data[i].impediments[j].imageUrl}?w=${w}&h=${h}`)
+                        }
+                    }
+                    
+                    items.push({
+                        item,
+                        description: data[i].description,
+                        level: data[i].level
                     })
-                }, 3000)
+                }
+                console.log('posX: ', posX)
+                    console.log('posY: ', posY)
+                    console.log('src: ', src)
+                if (this.state.isMounted) {
+                    this.setState({
+                        impediments: items,
+                        posBeginX: posX,
+                        posBeginY: posY,
+                        src,
+                        firstData: { key: '0', style: 'first', c: posX[this.state.level - 1], r: posY[this.state.level - 1], d: 0, src: require('../../../assets/ic-up.png') },
+                    }, () => {
+                        console.log('impediments2', this.state.impediments)
+                    })
+                    setTimeout(() => {
+                        this.setState({
+                            isLoading: false,
+                        })
+                    }, 3000)
+                }
                 setTimeout(() => {
                     const anim1 = Animated.timing(
                         this.state.posBotX,
                         {
-                            toValue: w * posX + w / 2 - wBot / 2 + startX,
+                            toValue: w * posX[this.state.level - 1] + w / 2 - wBot / 2 + startX,
                             duration: 10
                         }
                     )
                     const anim2 = Animated.timing(
                         this.state.posBotY,
                         {
-                            toValue: h * posY + h / 2 - hBot / 2 + startY,
+                            toValue: h * posY[this.state.level - 1] + h / 2 - hBot / 2 + startY,
                             duration: 10
                         }
                     )
@@ -381,7 +447,7 @@ export default class GamePlay extends Component {
             }
         }
         timeout = setTimeout(() => {
-            if (this.state.impediments.length > 0) {
+            if (this.state.impediments[this.state.level - 1].item.length > 0) {
                 this.setState({
                     isFinish: true
                 }, () => {
@@ -402,13 +468,13 @@ export default class GamePlay extends Component {
 
     getIcon(action) {
         if (action === 'up') {
-            return require('../../assets/new-up.png')
+            return require('../../../assets/new-up.png')
         } else if (action === 'down') {
-            return require('../../assets/new-down.png')
+            return require('../../../assets/new-down.png')
         } else if (action === 'left') {
-            return require('../../assets/new-left.png')
+            return require('../../../assets/new-left.png')
         } else {
-            return require('../../assets/new-right.png')
+            return require('../../../assets/new-right.png')
         }
     }
 
@@ -544,7 +610,7 @@ export default class GamePlay extends Component {
             case -3:
                 return r
             case -2:
-                if (r < parseInt(this.state.impediments.length / this.state.numOfCol)) {
+                if (r < parseInt(this.state.impediments[this.state.level - 1].item.length / this.state.numOfCol)) {
                     return r + 1
                 } else {
                     return r
@@ -560,7 +626,7 @@ export default class GamePlay extends Component {
             case 1:
                 return r
             case 2:
-                if (r < parseInt(this.state.impediments.length / this.state.numOfCol)) {
+                if (r < parseInt(this.state.impediments[this.state.level - 1].item.length / this.state.numOfCol)) {
                     return r + 1
                 } else {
                     return r
@@ -579,6 +645,7 @@ export default class GamePlay extends Component {
     goTop() {
         var arr = this.state.itemGo
         var item = this.state.firstData
+        console.log('JJJ', item)
         if (arr.length > 0) {
             var item = arr[arr.length - 1]
         }
@@ -588,7 +655,8 @@ export default class GamePlay extends Component {
         var r2 = this.getRow(item.r, item.d)
         var i = r * this.state.numOfCol + c
         var state = 0//ok
-        if (this.state.impediments[i].type === 3) {//là vật cản
+        
+        if (this.state.impediments[this.state.level - 1].item[i].type === vatCanType) {//là vật cản
             c = item.c
             r = item.r
             state = 1//di vao vat can
@@ -601,7 +669,7 @@ export default class GamePlay extends Component {
             c2,
             r2,
             d: item.d,
-            src: 'up',//require('../../assets/ic-up.png')
+            src: 'up',//require('../../../assets/ic-up.png')
             state
         })
 
@@ -624,7 +692,7 @@ export default class GamePlay extends Component {
             c: item.c,
             r: item.r,
             d: item.d > -4 ? item.d - 1 : 0,
-            src: 'left'//require('../../assets/ic-left.png')
+            src: 'left'//require('../../../assets/ic-left.png')
         })
         this.setState({
             itemGo: arr
@@ -643,7 +711,7 @@ export default class GamePlay extends Component {
             c: item.c,
             r: item.r,
             d: item.d > -4 ? item.d + 1 : 0,
-            src: 'right'//require('../../assets/ic-right.png')
+            src: 'right'//require('../../../assets/ic-right.png')
         })
         this.setState({
             itemGo: arr
@@ -662,7 +730,7 @@ export default class GamePlay extends Component {
         var r2 = r
         var i = r * this.state.numOfCol + c
         var state = 0//ok
-        if (this.state.impediments[i].type === 3) {//là vật cản
+        if (this.state.impediments[this.state.level - 1].item[i].type === vatCanType) {//là vật cản
             c = item.c
             r = item.r
             state = 1//di vao vat can
@@ -675,7 +743,7 @@ export default class GamePlay extends Component {
             c2,
             r2,
             d: item.d,
-            src: 'down',//require('../../assets/ic-down.png')
+            src: 'down',//require('../../../assets/ic-down.png')
             state
         })
 
@@ -693,14 +761,14 @@ export default class GamePlay extends Component {
         const anim1 = Animated.timing(
             this.state.posBotX,
             {
-                toValue: w * this.state.posBeginX + w / 2 - wBot / 2 + startX,
+                toValue: w * this.state.posBeginX[this.state.level - 1] + w / 2 - wBot / 2 + startX,
                 duration: 1
             }
         )
         const anim2 = Animated.timing(
             this.state.posBotY,
             {
-                toValue: h * this.state.posBeginY + h / 2 - hBot / 2 + startY,
+                toValue: h * this.state.posBeginY[this.state.level - 1] + h / 2 - hBot / 2 + startY,
                 duration: 1
             }
         )
@@ -759,9 +827,9 @@ export default class GamePlay extends Component {
         var item = this.state.itemGo[this.state.itemGo.length - 1]
         var r = item.r
         var c = item.c
-        var lastItem = this.state.impediments[r * this.state.numOfCol + c]
+        var lastItem = this.state.impediments[this.state.level - 1].item[r * this.state.numOfCol + c]
         var type = lastItem.type
-        if (type === 1) {
+        if (type === finishType) {
             return true
         } else {
             return false
@@ -790,7 +858,7 @@ export default class GamePlay extends Component {
                         width: Dimensions.get('window').width / 2,
                         height: Dimensions.get('window').height / 2,
                     }}
-                    source={require('../../assets/new-pannel-1.png')}
+                    source={require('../../../assets/new-pannel-1.png')}
                     resizeMode='stretch'
                 />
                 <Image
@@ -801,7 +869,7 @@ export default class GamePlay extends Component {
                         width: Dimensions.get('window').height / 4,
                         height: Dimensions.get('window').height / 4,
                     }}
-                    source={require('../../assets/sunbot.png')}
+                    source={require('../../../assets/sunbot.png')}
                     resizeMode='contain'
                 />
                 <Image
@@ -810,7 +878,7 @@ export default class GamePlay extends Component {
                         width: Dimensions.get('window').width / 2,
                         height: Dimensions.get('window').width / 2,
                     }}
-                    source={require('../../assets/animated-fireworks-01.gif')}
+                    source={require('../../../assets/animated-fireworks-01.gif')}
                 />
                 <Text
                     style={{
@@ -848,7 +916,7 @@ export default class GamePlay extends Component {
                             width: '100%',
                             height: '100%'
                         }}
-                        source={require('../../assets/new-play.png')}
+                        source={require('../../../assets/new-play.png')}
                         resizeMode='contain'
                     />
                     {/* <Text
@@ -888,7 +956,7 @@ export default class GamePlay extends Component {
                         width: Dimensions.get('window').width / 2,
                         height: Dimensions.get('window').height / 2,
                     }}
-                    source={require('../../assets/new-pannel-1.png')}
+                    source={require('../../../assets/new-pannel-1.png')}
                     resizeMode='stretch'
                 />
                 <Image
@@ -899,7 +967,7 @@ export default class GamePlay extends Component {
                         width: Dimensions.get('window').height / 4,
                         height: Dimensions.get('window').height / 4,
                     }}
-                    source={require('../../assets/sunbot-sad.png')}
+                    source={require('../../../assets/sunbot-sad.png')}
                     resizeMode='contain'
                 />
                 <Text
@@ -938,7 +1006,7 @@ export default class GamePlay extends Component {
                             width: '100%',
                             height: '100%'
                         }}
-                        source={require('../../assets/new-play.png')}//button3.png
+                        source={require('../../../assets/new-play.png')}//button3.png
                         resizeMode='contain'
                     />
                     {/* <Text
@@ -992,7 +1060,7 @@ export default class GamePlay extends Component {
                             width: 80,
                             height: 80
                         }}
-                        source={require('../../assets/loading5.gif')}
+                        source={require('../../../assets/loading5.gif')}
                         resizeMode='contain'
                     />
                 }
@@ -1072,7 +1140,7 @@ export default class GamePlay extends Component {
         return (
             <ImageBackground
                 style={styles.viewGameBoard}
-                source={require('../../assets/new-green-bg.png')}
+                source={require('../../../assets/new-green-bg.png')}
                 resizeMode='stretch'
             >
                 <View
@@ -1090,7 +1158,8 @@ export default class GamePlay extends Component {
                     onResponderMove={this.onMove.bind(this)}
                     onResponderRelease={this.onRelease.bind(this)}
                 />
-                {this.state.impediments.map((item, index) =>
+
+                {this.state.impediments.length > 0 ? this.state.impediments[this.state.level - 1].item.map((item, index) =>
                     <DrawSquare
                         col={item.indexOfCell % this.state.numOfCol}
                         row={parseInt(item.indexOfCell / this.state.numOfCol)}
@@ -1099,7 +1168,7 @@ export default class GamePlay extends Component {
                         type={item.type}
                         img={item.imageUrl}
                     />
-                )}
+                ) : <View />}
                 <Animated.Image
                     style={{
                         position: 'absolute',
@@ -1110,7 +1179,7 @@ export default class GamePlay extends Component {
                         zIndex: 2,
                         transform: [{ rotate: interpolateRotation }]
                     }}
-                    source={this.state.src === ''?require('../../assets/sunbot.png'):{uri: this.state.src}}
+                    source={this.state.src[this.state.level - 1] === '' ? require('../../../assets/sunbot.png') : { uri: this.state.src[this.state.level - 1] }}
                     // source={{ uri: `${this.state.impediments[]}?w=${w}&h=${h}` }}
                     resizeMode='cover'
                 >
@@ -1143,13 +1212,35 @@ export default class GamePlay extends Component {
         StopSound()
     }
 
+    backLevel() {
+        if (this.state.level > 1) {
+            this.setState({
+                level: this.state.level - 1,
+                firstData: { key: '0', style: 'first', c: this.state.posBeginX[this.state.level - 2], r: this.state.posBeginY[this.state.level - 2], d: 0, src: require('../../../assets/ic-up.png') },
+            }, () => {
+                this.clearGame()
+            })
+        }
+    }
+
+    nextLevel() {
+        if (this.state.level < this.state.impediments.length) {
+            this.setState({
+                level: this.state.level + 1,
+                firstData: { key: '0', style: 'first', c: this.state.posBeginX[this.state.level], r: this.state.posBeginY[this.state.level], d: 0, src: require('../../../assets/ic-up.png') },
+            }, () => {
+                this.clearGame()
+            })
+        }
+    }
+
     render() {
         const posSelected = this.state.posSelected
         const { navigate, goBack } = this.props.navigation
         return (
             <ImageBackground
                 style={styles.container}
-                source={require('../../assets/new-bg-main-game.png')}
+                source={require('../../../assets/new-bg-main-game.png')}
                 resizeMode='stretch'
             >
                 {this.state.isFinish === true ?
@@ -1218,16 +1309,54 @@ export default class GamePlay extends Component {
                 <View
                     style={styles.viewRight}
                 >
+                    <View
+                        style={{
+                            width: '70%',
+                            height: 1 * Dimensions.get('window').height / 8,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            paddingTop: 10
+                        }}
+                    >
+                        <TouchableOpacity
+                            style={styles.NBButton}
+                            onPress={() => this.backLevel()}
+                        >
+                            <Image
+                                style={styles.bottomControlSmall}
+                                source={require('../../../assets/new-back.png')}
+                                resizeMode='stretch'
+                            />
+                        </TouchableOpacity>
+                        <Text
+                            style={{
+                                fontSize: 20,
+                                color: '#FFF',
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            {this.state.impediments.length > 0 ? this.state.impediments[this.state.level - 1].level : ''}
+                        </Text>
+                        <TouchableOpacity
+                            style={styles.NBButton}
+                            onPress={() => this.nextLevel()}
+                        >
+                            <Image
+                                style={styles.bottomControlSmall}
+                                source={require('../../../assets/new-next.png')}
+                                resizeMode='stretch'
+                            />
+                        </TouchableOpacity>
+                    </View>
                     <ImageBackground
                         style={styles.viewDescription}
-                        source={require('../../assets/new-pannel-1.png')}
+                        source={require('../../../assets/new-pannel-course.png')}
                         resizeMode='stretch'
                     >
                         <Text
                             style={{
-                                marginTop: 10,
-                                marginBottom: 10,
-                                marginLeft: 20,
+                                marginTop: 5,
                                 marginBottom: 10,
                                 fontWeight: 'bold',
                                 fontSize: 14
@@ -1247,8 +1376,7 @@ export default class GamePlay extends Component {
                                     textAlign: 'center',
                                 }}
                             >
-                                It is probably the dream of any amateur astronomer to be able to be the boss of one of the great multi million dollar telescopes even if it was just for one hour or for a few shots. Sure, we can have a lot of fun with our binoculars. And as we improve our personal equipment set, we get better and better at pinpointing what we want to see in the sky.
-        But there is only so far we can go within the constraints of a family budget in building the perfect
+                                {this.state.impediments.length > 0 ? this.state.impediments[this.state.level - 1].description : ''}
                             </Text>
                         </ScrollView>
                     </ImageBackground>
@@ -1261,7 +1389,7 @@ export default class GamePlay extends Component {
                         >
                             <Image
                                 style={styles.bottomControlSmall}
-                                source={require('../../assets/ic-stone-erase.png')}
+                                source={require('../../../assets/new-earse.png')}
                                 resizeMode='stretch'
                             />
                         </TouchableOpacity>
@@ -1271,7 +1399,7 @@ export default class GamePlay extends Component {
                         >
                             <Image
                                 style={styles.bottomControlSmall}
-                                source={require('../../assets/new-delete.png')}
+                                source={require('../../../assets/new-delete.png')}
                                 resizeMode='stretch'
                             />
                         </TouchableOpacity>
@@ -1281,7 +1409,7 @@ export default class GamePlay extends Component {
                         >
                             <Image
                                 style={styles.bottomControlSmall}
-                                source={require('../../assets/new-pause.png')}
+                                source={require('../../../assets/new-pause.png')}
                                 resizeMode='stretch'
                             />
                         </TouchableOpacity>
@@ -1291,7 +1419,7 @@ export default class GamePlay extends Component {
                         >
                             <Image
                                 style={styles.bottomControlSmall}
-                                source={require('../../assets/new-play.png')}
+                                source={require('../../../assets/new-play.png')}
                                 resizeMode='stretch'
                             />
                         </TouchableOpacity> */}
@@ -1308,7 +1436,7 @@ export default class GamePlay extends Component {
                             >
                                 <Image
                                     style={styles.bottomControlBig}
-                                    source={require('../../assets/new-up.png')}
+                                    source={require('../../../assets/new-up.png')}
                                     resizeMode='stretch'
                                 />
                             </TouchableOpacity>
@@ -1322,7 +1450,7 @@ export default class GamePlay extends Component {
                             >
                                 <Image
                                     style={styles.bottomControlBig}
-                                    source={require('../../assets/new-left.png')}
+                                    source={require('../../../assets/new-left.png')}
                                     resizeMode='contain'
                                 />
                             </TouchableOpacity>
@@ -1332,7 +1460,7 @@ export default class GamePlay extends Component {
                             >
                                 <Image
                                     style={styles.bottomControlBig}
-                                    source={require('../../assets/new-play.png')}
+                                    source={require('../../../assets/new-play.png')}
                                     resizeMode='stretch'
                                 />
                             </TouchableOpacity>
@@ -1342,7 +1470,7 @@ export default class GamePlay extends Component {
                             >
                                 <Image
                                     style={styles.bottomControlBig}
-                                    source={require('../../assets/new-right.png')}
+                                    source={require('../../../assets/new-right.png')}
                                     resizeMode='contain'
                                 />
                             </TouchableOpacity>
@@ -1356,7 +1484,7 @@ export default class GamePlay extends Component {
                             >
                                 <Image
                                     style={styles.bottomControlBig}
-                                    source={require('../../assets/new-down.png')}
+                                    source={require('../../../assets/new-down.png')}
                                     resizeMode='contain'
                                 />
                             </TouchableOpacity>
@@ -1365,7 +1493,7 @@ export default class GamePlay extends Component {
                     <TouchableOpacity
                         style={{
                             position: 'absolute',
-                            top: 5,
+                            top: 60,
                             right: 5,
                             width: 30,
                             height: 30
@@ -1377,7 +1505,7 @@ export default class GamePlay extends Component {
                                 width: '100%',
                                 height: '100%'
                             }}
-                            source={require('../../assets/new-delete.png')}
+                            source={require('../../../assets/new-delete.png')}
                             resizeMode='contain'
                         />
                     </TouchableOpacity>
@@ -1388,9 +1516,9 @@ export default class GamePlay extends Component {
                         width: w * 1.2,
                         height: 2 * h,
                         bottom: 5,
-                        left: 7 * Dimensions.get('window').width / 10 - w*0.6
+                        left: 7 * Dimensions.get('window').width / 10 - w * 0.6
                     }}
-                    source={require('../../assets/sunbot.png')}
+                    source={require('../../../assets/sunbot.png')}
                     resizeMode='contain'
                 />
             </ImageBackground>
@@ -1440,7 +1568,8 @@ const styles = StyleSheet.create({
         width: '90%',
         height: 3 * Dimensions.get('window').height / 8,
         marginTop: 5,
-        padding: 5
+        padding: 5,
+        alignItems: 'center',
         // borderBottomLeftRadius: 20,
         // borderBottomRightRadius: 20,
         // backgroundColor: '#EAC76C'
@@ -1448,15 +1577,15 @@ const styles = StyleSheet.create({
     viewTopControl: {
         flexDirection: 'row',
         width: '95%',
-        height: 1.5 * Dimensions.get('window').height / 8,
+        height: 1 * Dimensions.get('window').height / 8,
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: (Platform.OS === 'ios' ? 10 : 1),
         // backgroundColor: '#DDD'
     },
     viewBottomControl: {
-        width: '95%',
-        height: 3.5 * Dimensions.get('window').height / 8,
+        width: '85%',
+        height: 3 * Dimensions.get('window').height / 8,
         padding: 5,
         justifyContent: 'flex-start',
         // backgroundColor: '#DDD'
@@ -1507,8 +1636,14 @@ const styles = StyleSheet.create({
     },
     bottomControlViewSmall: {
         margin: (Platform.OS === 'ios' ? 5 : 2),
+        width: Dimensions.get('window').height / 9,
+        height: Dimensions.get('window').height / 9,
+        // backgroundColor: '#FFF'
+    },
+    NBButton: {
+        margin: (Platform.OS === 'ios' ? 5 : 2),
         width: Dimensions.get('window').height / 8,
-        height: Dimensions.get('window').height / 8,
+        height: Dimensions.get('window').height / 10,
         // backgroundColor: '#FFF'
     },
     bottomControlSmall: {
@@ -1518,7 +1653,7 @@ const styles = StyleSheet.create({
     },
     bottomControlBig: {
         margin: 1,
-        width: Dimensions.get('window').height / 8,
-        height: Dimensions.get('window').height / 8,
+        width: Dimensions.get('window').height / 9,
+        height: Dimensions.get('window').height / 9,
     }
 })

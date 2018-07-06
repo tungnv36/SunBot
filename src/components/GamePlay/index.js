@@ -163,7 +163,7 @@ export default class GamePlay extends Component {
                     // isLoading: false,
                     posBeginX: posX,
                     posBeginY: posY,
-                    firstData: { key: '0', style: 'first', c: posX, r: posY, d: 0, src: require('../../assets/ic-up.png') },
+                    firstData: { key: '0', style: 'first', c: posX, r: posY, d: 0, src: require('../../../assets/ic-up.png') },
                 }, () => {
                     console.log('impediments2', this.state.impediments)
                 })
@@ -382,13 +382,13 @@ export default class GamePlay extends Component {
 
     getIcon(action) {
         if (action === 'up') {
-            return require('../../assets/ic-stone-up.png')
+            return require('../../../assets/ic-stone-up.png')
         } else if (action === 'down') {
-            return require('../../assets/ic-stone-down.png')
+            return require('../../../assets/ic-stone-down.png')
         } else if (action === 'left') {
-            return require('../../assets/ic-stone-left.png')
+            return require('../../../assets/ic-stone-left.png')
         } else {
-            return require('../../assets/ic-stone-right.png')
+            return require('../../../assets/ic-stone-right.png')
         }
     }
 
@@ -770,7 +770,7 @@ export default class GamePlay extends Component {
                         width: Dimensions.get('window').width / 2,
                         height: Dimensions.get('window').height / 2,
                     }}
-                    source={require('../../assets/stone_h.png')}
+                    source={require('../../../assets/stone_h.png')}
                     resizeMode='stretch'
                 />
                 <Image
@@ -781,7 +781,7 @@ export default class GamePlay extends Component {
                         width: Dimensions.get('window').height / 4,
                         height: Dimensions.get('window').height / 4,
                     }}
-                    source={require('../../assets/sunbot.png')}
+                    source={require('../../../assets/sunbot.png')}
                     resizeMode='contain'
                 />
                 <Image
@@ -790,7 +790,7 @@ export default class GamePlay extends Component {
                         width: Dimensions.get('window').width / 2,
                         height: Dimensions.get('window').width / 2,
                     }}
-                    source={require('../../assets/animated-fireworks-01.gif')}
+                    source={require('../../../assets/animated-fireworks-01.gif')}
                 />
                 <Text
                     style={{
@@ -828,7 +828,7 @@ export default class GamePlay extends Component {
                             width: '100%',
                             height: '100%'
                         }}
-                        source={require('../../assets/button3.png')}
+                        source={require('../../../assets/button3.png')}
                         resizeMode='contain'
                     />
                     <Text
@@ -868,7 +868,7 @@ export default class GamePlay extends Component {
                         width: Dimensions.get('window').width / 2,
                         height: Dimensions.get('window').height / 2,
                     }}
-                    source={require('../../assets/stone_h.png')}
+                    source={require('../../../assets/stone_h.png')}
                     resizeMode='stretch'
                 />
                 <Image
@@ -879,7 +879,7 @@ export default class GamePlay extends Component {
                         width: Dimensions.get('window').height / 4,
                         height: Dimensions.get('window').height / 4,
                     }}
-                    source={require('../../assets/sunbot-sad.png')}
+                    source={require('../../../assets/sunbot-sad.png')}
                     resizeMode='contain'
                 />
                 <Text
@@ -918,7 +918,7 @@ export default class GamePlay extends Component {
                             width: '100%',
                             height: '100%'
                         }}
-                        source={require('../../assets/button3.png')}
+                        source={require('../../../assets/button3.png')}
                         resizeMode='contain'
                     />
                     <Text
@@ -972,7 +972,7 @@ export default class GamePlay extends Component {
                             width: 80,
                             height: 80
                         }}
-                        source={require('../../assets/loading5.gif')}
+                        source={require('../../../assets/loading5.gif')}
                         resizeMode='contain'
                     />
                 }
@@ -1093,7 +1093,7 @@ export default class GamePlay extends Component {
                         zIndex: 2,
                         transform: [{ rotate: interpolateRotation }]
                     }}
-                    source={require('../../assets/sunbot.png')}
+                    source={require('../../../assets/sunbot.png')}
                 // onLayout={event => {
                 //     const layout = event.nativeEvent.layout;
                 //     console.log('height:', layout.height);
@@ -1137,7 +1137,7 @@ export default class GamePlay extends Component {
         return (
             <ImageBackground
                 style={styles.container}
-                source={require('../../assets/bg-sunbot-3.png')}
+                source={require('../../../assets/bg-sunbot-3.png')}
             >
                 {this.state.isFinish === true ?
                     <Animated.View
@@ -1209,7 +1209,7 @@ export default class GamePlay extends Component {
                 >
                     <ImageBackground
                         style={styles.viewDescription}
-                        source={require('../../assets/stone_h.png')}
+                        source={require('../../../assets/stone_h.png')}
                         resizeMode='stretch'
                     >
                         <Text
@@ -1247,7 +1247,7 @@ export default class GamePlay extends Component {
                         >
                             <Image
                                 style={styles.bottomControlSmall}
-                                source={require('../../assets/ic-stone-erase.png')}
+                                source={require('../../../assets/ic-stone-erase.png')}
                                 resizeMode='stretch'
                             />
                         </TouchableOpacity>
@@ -1257,7 +1257,7 @@ export default class GamePlay extends Component {
                         >
                             <Image
                                 style={styles.bottomControlSmall}
-                                source={require('../../assets/ic-stone-close.png')}
+                                source={require('../../../assets/ic-stone-close.png')}
                                 resizeMode='stretch'
                             />
                         </TouchableOpacity>
@@ -1267,7 +1267,7 @@ export default class GamePlay extends Component {
                         >
                             <Image
                                 style={styles.bottomControlSmall}
-                                source={require('../../assets/ic-stone-pause.png')}
+                                source={require('../../../assets/ic-stone-pause.png')}
                                 resizeMode='stretch'
                             />
                         </TouchableOpacity>
@@ -1277,7 +1277,7 @@ export default class GamePlay extends Component {
                         >
                             <Image
                                 style={styles.bottomControlSmall}
-                                source={require('../../assets/ic-stone-play.png')}
+                                source={require('../../../assets/ic-stone-play.png')}
                                 resizeMode='stretch'
                             />
                         </TouchableOpacity>
@@ -1294,7 +1294,7 @@ export default class GamePlay extends Component {
                             >
                                 <Image
                                     style={styles.bottomControlBig}
-                                    source={require('../../assets/ic-stone-up.png')}
+                                    source={require('../../../assets/ic-stone-up.png')}
                                     resizeMode='stretch'
                                 />
                             </TouchableOpacity>
@@ -1308,7 +1308,7 @@ export default class GamePlay extends Component {
                             >
                                 <Image
                                     style={styles.bottomControlBig}
-                                    source={require('../../assets/ic-stone-left.png')}
+                                    source={require('../../../assets/ic-stone-left.png')}
                                     resizeMode='contain'
                                 />
                             </TouchableOpacity>
@@ -1318,7 +1318,7 @@ export default class GamePlay extends Component {
                             >
                                 <Image
                                     style={styles.bottomControlBig}
-                                    source={require('../../assets/ic-stone-down.png')}
+                                    source={require('../../../assets/ic-stone-down.png')}
                                     resizeMode='contain'
                                 />
                             </TouchableOpacity>
@@ -1328,7 +1328,7 @@ export default class GamePlay extends Component {
                             >
                                 <Image
                                     style={styles.bottomControlBig}
-                                    source={require('../../assets/ic-stone-right.png')}
+                                    source={require('../../../assets/ic-stone-right.png')}
                                     resizeMode='contain'
                                 />
                             </TouchableOpacity>
@@ -1349,7 +1349,7 @@ export default class GamePlay extends Component {
                                 width: '100%',
                                 height: '100%'
                             }}
-                            source={require('../../assets/ic-stone-close.png')}
+                            source={require('../../../assets/ic-stone-close.png')}
                             resizeMode='contain'
                         />
                     </TouchableOpacity>

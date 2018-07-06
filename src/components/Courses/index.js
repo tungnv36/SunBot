@@ -10,13 +10,15 @@ import {
     Dimensions,
     Platform,
     StatusBar,
-    Animated
+    Animated,
+    ActivityIndicator
 } from 'react-native'
 import Constant from '../../constants/Constant'
-import CallApi from '../../Api/CallApi';
-import { CLIENT_ERROR } from 'apisauce';
-import { BlurView, VibrancyView } from 'react-native-blur';
-import { PlaySound, StopSound, PlaySoundRepeat, PlaySoundMusicVolume } from 'react-native-play-sound';
+import CallApi from '../../Api/CallApi'
+import { CLIENT_ERROR } from 'apisauce'
+import { BlurView, VibrancyView } from 'react-native-blur'
+import { PlaySound, StopSound, PlaySoundRepeat, PlaySoundMusicVolume } from 'react-native-play-sound'
+import Immersive from 'react-native-immersive'
 
 export default class Courses extends Component {
     constructor(props) {
@@ -36,10 +38,14 @@ export default class Courses extends Component {
             ],
             viewRef: null,
             bottomSunBot: new Animated.Value(0),
-            scaleItem: new Animated.Value(0)
+            scaleItem: new Animated.Value(0),
+            isLoading: true,
         }
         if (Platform.OS === 'android') {
             StatusBar.setHidden(true)
+
+            Immersive.on()
+            Immersive.setImmersive(true)
         }
     }
 
@@ -89,8 +95,45 @@ export default class Courses extends Component {
                 this.setState({
                     arr_courses: items
                 })
+                setTimeout(() => {
+                    this.setState({
+                        isLoading: false,
+                    })
+                }, 3000)
             }
         }
+    }
+
+    renderLoading() {
+        return (
+            <View
+                style={{
+                    backgroundColor: '#FFF',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 1
+                }}
+            >
+                {Platform.OS === 'android' ?
+                    <ActivityIndicator
+                        size={Platform.OS === 'ios' ? 1 : 80}
+                    /> :
+                    <Image
+                        style={{
+                            width: 80,
+                            height: 80
+                        }}
+                        source={require('../../../assets/loading5.gif')}
+                        resizeMode='contain'
+                    />
+                }
+            </View>
+        )
     }
 
     render() {
@@ -98,9 +141,10 @@ export default class Courses extends Component {
         return (
             <ImageBackground
                 style={styles.constain}
-                source={require('../../assets/bg-sunbot.png')}
+                source={require('../../../assets/new-bg-sunbot.png')}
                 ref={1}
             >
+                {this.state.isLoading ? this.renderLoading() : null}
                 {/* {this.state.isFinish === true ?
                 <Animated.View
                     style={{
@@ -117,10 +161,10 @@ export default class Courses extends Component {
                 <FlatList
                     style={{
                         width: (this.state.arr_courses.length * (Dimensions.get('window').width / 3 - 40) + this.state.arr_courses.length * 20) > Dimensions.get('window').width ? '100%' : this.state.arr_courses.length * (Dimensions.get('window').width / 3 - 40) + this.state.arr_courses.length * 20,
-                        height: '75%',
+                        height: '70%',
                         marginLeft: 10,
                         marginRight: 10,
-                        marginTop: 20
+                        marginTop: 40
                     }}
                     data={this.state.arr_courses}
                     renderItem={
@@ -138,57 +182,66 @@ export default class Courses extends Component {
                                         description: item.description,
                                         index: index + 1
                                     })
-                                    }
+                                }
                                 }
                             >
                                 <ImageBackground
                                     style={styles.subrow}
-                                    source={require('../../assets/stone.png')}
+                                    source={require('../../../assets/new-pannel-course.png')}
                                     resizeMode='stretch'
                                 >
-                                    {item.background === '' ?
-                                    <View
-                                        style={{
-                                            width: '50%',
-                                            height: '40%',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            backgroundColor: '#FFF',
-                                            borderRadius: 5
-                                        }}
-                                    />
-                                    :
-                                    <Image
-                                        style={{
-                                            width: '50%',
-                                            height: '40%',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            backgroundColor: '#FFF',
-                                            borderRadius: 5
-                                        }}
-                                        source={{ uri: item.background }}
-                                        resizeMode='cover'
-                                    />
-                                    }
                                     <Text
                                         style={{
-                                            height: '30%',
-                                            padding: 10,
-                                            fontSize: 22,
-                                            color: '#525252',
-                                            fontFamily: 'Pacifico'
+                                            height: '25%',
+                                            paddingTop: 12,
+                                            fontSize: 18,
+                                            color: '#8A3618',
+                                            fontFamily: 'Pacifico',
+                                            fontWeight: 'bold',
+
                                         }}
                                     >
                                         {`Khoá ${index + 1}`}
                                     </Text>
+                                    {item.background === '' ?
+                                        <View
+                                            style={{
+                                                width: '30%',
+                                                height: '30%',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                backgroundColor: '#FFF',
+                                                borderRadius: 5,
+                                                padding: 10,
+                                                marginTop: 20,
+                                                marginBottom: 10
+                                            }}
+                                        />
+                                        :
+                                        <Image
+                                            style={{
+                                                width: '30%',
+                                                height: '30%',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                backgroundColor: '#FFF',
+                                                borderRadius: 5,
+                                                padding: 10,
+                                                marginTop: 20,
+                                                marginBottom: 10
+                                            }}
+                                            source={{ uri: item.background }}
+                                            resizeMode='cover'
+                                        />
+                                    }
+
                                     <Text
                                         style={{
-                                            height: '20%',
-                                            marginLeft: 5,
-                                            marginRight: 5,
+                                            height: '35%',
+                                            marginLeft: Platform.OS === 'ios' ? 5 : 20,
+                                            marginRight: Platform.OS === 'ios' ? 5 : 20,
                                             textAlign: 'center',
-                                            color: '#525252'
+                                            color: '#FFFFFF'
                                         }}
                                     >
                                         {item.name}
@@ -199,88 +252,82 @@ export default class Courses extends Component {
                     }
                     horizontal={true}
                 />
-                <ImageBackground
-                    style={styles.viewTop}
-                    source={require('../../assets/pannel-bottom.png')}
+                <View
+                    style={styles.bottomView}
                 >
-                    <Animated.Image
+                    <TouchableOpacity
+                        style={styles.buttonIcon}
+                        onPress={() => navigate('PlayVideo', {
+                            url: 'https://www.youtube.com/embed/XqZsoesa55w'
+                        })}
+                    >
+                        <Image
+                            style={styles.icon}
+                            resizeMode='contain'
+                            source={require('../../../assets/new-play.png')}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.buttonIcon}
+                        onPress={() => navigate('PlayVideo', {
+                            url: 'https://www.youtube.com/embed/v2nQOUL6hWs'
+                        })}
+                    >
+                        <Image
+                            style={styles.icon}
+                            resizeMode='contain'
+                            source={require('../../../assets/new-movie.png')}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.buttonIcon}
+                    >
+                        <Image
+                            style={styles.icon}
+                            resizeMode='contain'
+                            source={require('../../../assets/new-about.png')}
+                        />
+                    </TouchableOpacity>
+                </View>
+                <Animated.Image
+                    style={{
+                        width: '20%',
+                        height: '30%',
+                        position: 'absolute',
+                        left: 20,
+                        bottom: 20,
+                        transform: [{
+                            translateY: this.state.bottomSunBot.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [Dimensions.get('window').height / 2, 10]
+                            }),
+                        }]
+                    }}
+                    source={require('../../../assets/sunbot-right.png')}
+                    resizeMode='contain'
+                />
+                <ImageBackground
+                    style={styles.viewText}
+                    source={require('../../../assets/new-pannel-description.png')}
+                    resizeMode='contain'
+                >
+                    <Text
                         style={{
-                            width: '20%',
-                            height: '150%',
-                            position: 'absolute',
-                            left: 0,
-                            bottom: -10,
-                            transform: [{
-                                translateY: this.state.bottomSunBot.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: [Dimensions.get('window').height / 2, 10]
-                                }),
-                            }]
+                            fontSize: 18,
+                            fontFamily: 'Pacifico',
+                            color: '#000',
                         }}
-                        source={require('../../assets/sunbot-right.png')}
-                        resizeMode='contain'
-                    />
-                    <View
-                        style={styles.viewBot}
-                    />
-                    <View
-                        style={styles.viewText}
                     >
-                        <Text
-                            style={{
-                                fontSize: 25,
-                                fontFamily: 'Pacifico',
-                                color: '#FFF',
-                            }}
-                        >
-                            Sunbot xin chào!
+                        Sunbot xin chào!
                             </Text>
-                        <Text
-                            style={{
-                                color: '#FFF',
-                                fontSize: 12,
-                            }}
-                        >
-                            Chúng ta cùng bắt đầu thử thách nhé!
-                            </Text>
-                    </View>
-                    <View
-                        style={styles.bottomView}
+                    <Text
+                        style={{
+                            color: '#000',
+                            fontSize: 12,
+                        }}
                     >
-                        <TouchableOpacity
-                            style={styles.buttonIcon}
-                            onPress={() => navigate('PlayVideo', {
-                                url: 'https://www.youtube.com/embed/XqZsoesa55w'
-                            })}
-                        >
-                            <Image
-                                style={styles.icon}
-                                resizeMode='contain'
-                                source={require('../../assets/ic-stone-play.png')}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.buttonIcon}
-                            onPress={() => navigate('PlayVideo', {
-                                url: 'https://www.youtube.com/embed/v2nQOUL6hWs'
-                            })}
-                        >
-                            <Image
-                                style={styles.icon}
-                                resizeMode='contain'
-                                source={require('../../assets/ic-stone-movie.png')}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.buttonIcon}
-                        >
-                            <Image
-                                style={styles.icon}
-                                resizeMode='contain'
-                                source={require('../../assets/ic-stone-about.png')}
-                            />
-                        </TouchableOpacity>
-                    </View>
+                        Chúng ta cùng bắt đầu thử thách nhé!
+                            </Text>
                 </ImageBackground>
             </ImageBackground>
         )
@@ -308,10 +355,14 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
     },
     viewText: {
-        padding: 5,
-        width: '50%',
-        height: '100%',
-        justifyContent: 'center'
+        position: 'absolute',
+        paddingLeft: 25,
+        width: '45%',
+        height: '20%',
+        justifyContent: 'center',
+        left: 150,
+        bottom: 50
+        // backgroundColor: '#FFF'
     },
     logo: {
         width: '20%',
@@ -321,7 +372,7 @@ const styles = StyleSheet.create({
     },
     row: {
         width: Dimensions.get('window').width / 3 - 40,
-        height: 3 * Dimensions.get('window').height / 5 - 20,
+        height: 2.5 * Dimensions.get('window').height / 5 - 20,
         borderRadius: 50,
         alignItems: 'center',
         justifyContent: 'center',
@@ -329,23 +380,25 @@ const styles = StyleSheet.create({
     },
     subrow: {
         width: Dimensions.get('window').width / 3 - 40,
-        height: 3 * Dimensions.get('window').height / 5 - 20,
+        height: 2.5 * Dimensions.get('window').height / 5 - 20,
         borderRadius: 50,
         alignItems: 'center',
         justifyContent: 'center',
         margin: 10,
-        padding: 10
+        // padding: 10
     },
     textRow: {
         fontSize: Constant.NUMBER.FONT_SIZE_LARGE,
         textAlign: 'center',
     },
     bottomView: {
-        width: '30%',
-        height: '100%',
+        width: '100%',
+        height: '20%',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
+        paddingRight: 10
+        // backgroundColor: '#DDDDDD'
     },
     buttonIcon: {
         padding: 5

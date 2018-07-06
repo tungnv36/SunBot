@@ -48,7 +48,7 @@ export default class Slide extends Component {
                 >
                     <Image
                         style={styles.imageStyle}
-                        source={require('../../assets/ic-stone-close.png')}
+                        source={require('../../../assets/new-delete.png')}
                         resizeMode='contain'
                     />
                 </TouchableOpacity>

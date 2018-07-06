@@ -90,7 +90,7 @@ export default class Lesson extends Component {
         return (
             <ImageBackground
                 style={styles.container}
-                source={require('../../assets/bg-sunbot-3.png')}
+                source={require('../../../assets/bg-sunbot-3.png')}
             >
                 <View
                     style={styles.viewTop}
@@ -108,7 +108,7 @@ export default class Lesson extends Component {
                         >
                             <Image
                                 style={styles.iconSmall}
-                                source={require('../../assets/ic-back.png')}
+                                source={require('../../../assets/ic-back.png')}
                                 resizeMode='contain'
                             />
                         </TouchableOpacity>
@@ -136,7 +136,7 @@ export default class Lesson extends Component {
                             <Image
                                 style={styles.icon}
                                 resizeMode='contain'
-                                source={require('../../assets/ic-play.png')}
+                                source={require('../../../assets/ic-play.png')}
                             />
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -145,7 +145,7 @@ export default class Lesson extends Component {
                             <Image
                                 style={styles.icon}
                                 resizeMode='contain'
-                                source={require('../../assets/ic-movie.png')}
+                                source={require('../../../assets/ic-movie.png')}
                             />
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -154,7 +154,7 @@ export default class Lesson extends Component {
                             <Image
                                 style={styles.icon}
                                 resizeMode='contain'
-                                source={require('../../assets/ic-about.png')}
+                                source={require('../../../assets/ic-about.png')}
                             />
                         </TouchableOpacity>
                     </View>
@@ -262,7 +262,7 @@ export default class Lesson extends Component {
                                 width: Dimensions.get('window').height / 7,
                                 height: Dimensions.get('window').height / 7
                             }}
-                            source={require('../../assets/ic-play-1.png')}
+                            source={require('../../../assets/ic-play-1.png')}
                             resizeMode='contain'
                         />
                     </TouchableOpacity>
@@ -280,7 +280,7 @@ export default class Lesson extends Component {
                                 width: Dimensions.get('window').height / 6,
                                 height: Dimensions.get('window').height / 6
                             }}
-                            source={require('../../assets/ic-play-2.png')}
+                            source={require('../../../assets/ic-play-2.png')}
                             resizeMode='contain'
                         />
                     </TouchableOpacity>
@@ -295,7 +295,7 @@ export default class Lesson extends Component {
                                 width: Dimensions.get('window').height / 7,
                                 height: Dimensions.get('window').height / 7
                             }}
-                            source={require('../../assets/ic-play-3.png')}
+                            source={require('../../../assets/ic-play-3.png')}
                             resizeMode='contain'
                         />
                     </TouchableOpacity>

@@ -104,34 +104,62 @@ export default class Lesson extends Component {
         return (
             <ImageBackground
                 style={styles.container}
-                source={require('../../assets/bg-sunbot-3.png')}
+                source={require('../../../assets/new-bg-sunbot-3.png')}
             >
-                <ImageBackground
-                    style={styles.panel}
-                    source={require('../../assets/panel-intro.png')}
-                    resizeMode='stretch'
+                <View
+                    style={{
+                        width: '70%',
+                        height: '90%',
+                        // backgroundColor: '#FFF',
+                        alignItems: 'center',
+                    }}
                 >
-                    <Text
-                        style={styles.title}
-                    >
-                        {`Bài ${index}`}
-                    </Text>
-                    <ScrollView
-                        style={styles.description}
+                    <ImageBackground
+                        style={{
+                            width: 4 * Dimensions.get('window').width / 10,//'30%',
+                            height: 1.5 * Dimensions.get('window').height / 10,//'16%',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 2,
+                        }}
+                        source={require('../../../assets/new-title-pannel.png')}
+                        resizeMode='contain'
                     >
                         <Text
-                            style={styles.textDescription}
+                            style={styles.title}
                         >
-                            {description}
+                            {`Bài ${index}`}
                         </Text>
-                    </ScrollView>
-                    <View
+                    </ImageBackground>
+                    <ImageBackground
                         style={{
-                            width: '100%',
-                            height: '30%'
+                            width: 7 * Dimensions.get('window').width / 10,
+                            height: 7.5 * Dimensions.get('window').height / 10,
+                            marginTop: -15,
+                            zIndex: 1,
+                            alignItems: 'center',
                         }}
-                    />
-                </ImageBackground>
+                        source={require('../../../assets/new-pannel-lesson.png')}
+                        resizeMode='stretch'
+                    >
+
+                        <ScrollView
+                            style={styles.description}
+                        >
+                            <Text
+                                style={styles.textDescription}
+                            >
+                                {description}
+                            </Text>
+                        </ScrollView>
+                        <View
+                            style={{
+                                width: '100%',
+                                height: '35%'
+                            }}
+                        />
+                    </ImageBackground>
+                </View>
                 <Animated.Image
                     style={[styles.sunbot, {
                         transform: [{
@@ -141,7 +169,7 @@ export default class Lesson extends Component {
                             }),
                         }]
                     }]}
-                    source={require('../../assets/sunbot-right.png')}
+                    source={require('../../../assets/sunbot-right.png')}
                     resizeMode='contain'
                 />
                 <View
@@ -149,7 +177,7 @@ export default class Lesson extends Component {
                 >
                     <Image
                         style={styles.column}
-                        source={require('../../assets/column.png')}
+                        source={require('../../../assets/new-column.png')}
                         resizeMode='contain'
                     />
                     <View
@@ -161,15 +189,25 @@ export default class Lesson extends Component {
                                 content
                             })}
                         >
-                            <Image
+                            <ImageBackground
                                 style={{
                                     width: '100%',
                                     height: '100%',
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                 }}
-                                source={require('../../assets/button_slide.png')}
-                            />
+                                source={require('../../../assets/new-menu-button-1.png')}
+                                resizeMode='contain'
+                            >
+                                <Text
+                                    style={{
+                                        fontSize: 14,
+                                        color:'#FFF'
+                                    }}
+                                >
+                                    Slide
+                                </Text>
+                            </ImageBackground>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.menuButton}
@@ -177,29 +215,49 @@ export default class Lesson extends Component {
                                 lessonId: key
                             })}
                         >
-                            <Image
+                            <ImageBackground
                                 style={{
                                     width: '100%',
                                     height: '100%',
                                     alignItems: 'center',
-                                    justifyContent: 'flex-start',
+                                    justifyContent: 'center',
                                 }}
-                                source={require('../../assets/button_play.png')}
-                            />
+                                source={require('../../../assets/new-menu-button-2.png')}
+                                resizeMode='contain'
+                            >
+                                <Text
+                                    style={{
+                                        fontSize: 14,
+                                        color:'#FFF'
+                                    }}
+                                >
+                                    Play
+                                </Text>
+                            </ImageBackground>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.menuButton}
                             onPress={() => goBack(null)}
                         >
-                            <Image
+                            <ImageBackground
                                 style={{
                                     width: '100%',
                                     height: '100%',
                                     alignItems: 'center',
-                                    justifyContent: 'flex-start',
+                                    justifyContent: 'center',
                                 }}
-                                source={require('../../assets/button_back.png')}
-                            />
+                                source={require('../../../assets/new-menu-button-1.png')}
+                                resizeMode='contain'
+                            >
+                                <Text
+                                    style={{
+                                        fontSize: 14,
+                                        color:'#FFF'
+                                    }}
+                                >
+                                    Back
+                                </Text>
+                            </ImageBackground>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -222,30 +280,30 @@ const styles = StyleSheet.create({
     title: {
         width: '100%',
         fontWeight: 'bold',
-        marginTop: 10,
+        // marginTop: 10,
         fontSize: 22,
         fontFamily: 'Pacifico',
         textAlign: 'center',
+        color: '#FFF'
         // backgroundColor: '#FFF'
     },
     description: {
-        width: '70%',
-        height: 100,
-        marginTop: 60,
+        width: '80%',
+        height: '50%',
+        marginTop: 20,
         // backgroundColor: '#FFF'
     },
     textDescription: {
         width: '100%',
         height: '100%',
         fontSize: 16
-        // backgroundColor: '#FFF'
     },
     sunbot: {
         position: 'absolute',
-        bottom: -20,
-        left: -50,
-        width: '30%',
-        height: '50%',
+        bottom: 20,
+        left: 20,
+        width: '25%',
+        height: '35%',
         // backgroundColor: '#FFF'
     },
     button: {
@@ -259,16 +317,17 @@ const styles = StyleSheet.create({
     },
     column: {
         position: 'absolute',
-        top: 0,
-        left: 0,
+        bottom: 20,
+        right: 20,
         width: '100%',
         height: '100%'
     },
     viewButton: {
         position: 'absolute',
-        left: 0,
-        width: '100%',
-        height: '80%',
+        right: 20,
+        bottom: 60,
+        width: '90%',
+        height: '70%',
         // backgroundColor: '#FFF'
     },
     menuButton: {

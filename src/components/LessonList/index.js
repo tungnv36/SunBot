@@ -8,7 +8,9 @@ import {
     TouchableOpacity,
     ImageBackground,
     Dimensions,
-    Animated
+    Animated,
+    Platform,
+    ActivityIndicator
 } from 'react-native'
 import Constant from '../../constants/Constant'
 import { BlurView, VibrancyView } from 'react-native-blur';
@@ -33,7 +35,8 @@ export default class LessonList extends Component {
                 // { key: '11', name: 'Bài 12', background: '#F31527' },
             ],
             bottomSunBot: new Animated.Value(0),
-            scaleItem: new Animated.Value(0)
+            scaleItem: new Animated.Value(0),
+            isLoading: true,
         }
     }
 
@@ -87,8 +90,45 @@ export default class LessonList extends Component {
                 this.setState({
                     arr_lesson: items
                 })
+                setTimeout(() => {
+                    this.setState({
+                        isLoading: false,
+                    })
+                }, 3000)
             }
         }
+    }
+
+    renderLoading() {
+        return (
+            <View
+                style={{
+                    backgroundColor: '#FFF',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 1
+                }}
+            >
+                {Platform.OS === 'android' ?
+                    <ActivityIndicator
+                        size={Platform.OS === 'ios' ? 1 : 80}
+                    /> :
+                    <Image
+                        style={{
+                            width: 80,
+                            height: 80
+                        }}
+                        source={require('../../../assets/loading5.gif')}
+                        resizeMode='contain'
+                    />
+                }
+            </View>
+        )
     }
 
     render() {
@@ -100,8 +140,9 @@ export default class LessonList extends Component {
         return (
             <ImageBackground
                 style={styles.constain}
-                source={require('../../assets/bg-sunbot-2.png')}
+                source={require('../../../assets/new-bg-sunbot-2.png')}
             >
+                {this.state.isLoading ? this.renderLoading() : null}
                 <View
                     style={{
                         width: '100%',
@@ -121,7 +162,7 @@ export default class LessonList extends Component {
                                 height: 30
                             }}
                             resizeMode='contain'
-                            source={require('../../assets/ic-stone-close.png')}
+                            source={require('../../../assets/new-delete.png')}
                         />
                     </TouchableOpacity>
                     <Text
@@ -132,7 +173,7 @@ export default class LessonList extends Component {
                             fontFamily: 'Pacifico',
                         }}
                     >
-                        Danh sách bài học
+
                     </Text>
                     <View
                         style={{
@@ -151,12 +192,11 @@ export default class LessonList extends Component {
                 >
                     <FlatList
                         style={{
-                            flex: 1,
-                            // width: (this.state.arr_courses.length * (Dimensions.get('window').width / 3 - 40) + this.state.arr_courses.length * 20) > Dimensions.get('window').width ? '100%' : this.state.arr_courses.length * (Dimensions.get('window').width / 3 - 40) + this.state.arr_courses.length * 20,
-                            // height: '75%',
-                            // marginLeft: 10,
-                            // marginRight: 10,
-                            // marginTop: 20
+                            width: (this.state.arr_lesson.length * (Dimensions.get('window').width / 3 - 40) + this.state.arr_lesson.length * 20) > Dimensions.get('window').width ? '100%' : this.state.arr_lesson.length * (Dimensions.get('window').width / 3 - 40) + this.state.arr_lesson.length * 20,
+                            height: '70%',
+                            marginLeft: 10,
+                            marginRight: 10,
+                            marginTop: 10
                         }}
                         data={this.state.arr_lesson}
                         renderItem={
@@ -176,52 +216,59 @@ export default class LessonList extends Component {
                                 >
                                     <ImageBackground
                                         style={styles.subrow}
-                                        source={require('../../assets/stone.png')}
+                                        source={require('../../../assets/new-pannel-lesson-list.png')}
                                         resizeMode='stretch'
                                     >
-                                        {item.background === '' ?
-                                            <View
-                                                style={{
-                                                    width: '50%',
-                                                    height: '40%',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    backgroundColor: '#FFF',
-                                                    borderRadius: 5
-                                                }}
-                                            />
-                                            :
-                                            <Image
-                                                style={{
-                                                    width: '50%',
-                                                    height: '40%',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    backgroundColor: '#FFF',
-                                                    borderRadius: 5
-                                                }}
-                                                source={{ uri: item.background }}
-                                                resizeMode='cover'
-                                            />
-                                        }
                                         <Text
                                             style={{
-                                                height: '30%',
-                                                padding: 10,
-                                                fontSize: 22,
-                                                color: '#525252',
+                                                height: '25%',
+                                                paddingTop: 12,
+                                                fontSize: 18,
+                                                color: '#8A3618',
                                                 fontFamily: 'Pacifico'
                                             }}
                                         >
                                             {`Bài ${index + 1}`}
                                         </Text>
+                                        {item.background === '' ?
+                                            <View
+                                                style={{
+                                                    width: '30%',
+                                                    height: '30%',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    // backgroundColor: '#FFF',
+                                                    borderRadius: 5,
+                                                    padding: 10,
+                                                    marginTop: 20,
+                                                    marginBottom: 10
+                                                }}
+                                            />
+                                            :
+                                            <Image
+                                                style={{
+                                                    width: '30%',
+                                                    height: '30%',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    // backgroundColor: '#FFF',
+                                                    borderRadius: 5,
+                                                    padding: 10,
+                                                    marginTop: 20,
+                                                    marginBottom: 10
+                                                }}
+                                                source={{ uri: item.background }}
+                                                resizeMode='cover'
+                                            />
+                                        }
+
                                         <Text
                                             style={{
-                                                height: '20%',
+                                                height: '35%',
                                                 marginLeft: 5,
                                                 marginRight: 5,
                                                 textAlign: 'center',
-                                                color: '#525252'
+                                                color: '#0C5050'
                                             }}
                                         >
                                             {item.name}
@@ -233,9 +280,86 @@ export default class LessonList extends Component {
                         horizontal={true}
                     />
                 </View>
+                <View
+                    style={styles.bottomView}
+                >
+                    <TouchableOpacity
+                        style={styles.buttonIcon}
+                        onPress={() => navigate('PlayVideo', {
+                            url: 'https://www.youtube.com/embed/XqZsoesa55w'
+                        })}
+                    >
+                        <Image
+                            style={styles.icon}
+                            resizeMode='contain'
+                            source={require('../../../assets/new-play.png')}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.buttonIcon}
+                        onPress={() => navigate('PlayVideo', {
+                            url: 'https://www.youtube.com/embed/v2nQOUL6hWs'
+                        })}
+                    >
+                        <Image
+                            style={styles.icon}
+                            resizeMode='contain'
+                            source={require('../../../assets/new-movie.png')}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.buttonIcon}
+                    >
+                        <Image
+                            style={styles.icon}
+                            resizeMode='contain'
+                            source={require('../../../assets/new-about.png')}
+                        />
+                    </TouchableOpacity>
+                </View>
+                <Animated.Image
+                    style={{
+                        width: '20%',
+                        height: '30%',
+                        position: 'absolute',
+                        left: 20,
+                        bottom: 20,
+                        transform: [{
+                            translateY: this.state.bottomSunBot.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [Dimensions.get('window').height / 2, 10]
+                            }),
+                        }]
+                    }}
+                    source={require('../../../assets/sunbot-right.png')}
+                    resizeMode='contain'
+                />
                 <ImageBackground
+                    style={styles.viewText}
+                    source={require('../../../assets/new-pannel-description.png')}
+                    resizeMode='contain'
+                >
+                    <Text
+                        style={{
+                            fontSize: 18,
+                            fontFamily: 'Pacifico',
+                            color: '#000',
+                        }}
+                    >
+                        {`Khoá ${index}`}
+                    </Text>
+                    <Text
+                        style={{
+                            color: '#000',
+                            fontSize: 12,
+                        }}
+                    >
+                        {description}
+                    </Text>
+                </ImageBackground>
+                {/* <ImageBackground
                     style={styles.viewTop}
-                    source={require('../../assets/pannel-bottom.png')}
+                    source={require('../../../assets/pannel-bottom.png')}
                 >
                     <Animated.Image
                         style={[styles.logo, {
@@ -246,7 +370,7 @@ export default class LessonList extends Component {
                                 }),
                             }]
                         }]}
-                        source={require('../../assets/sunbot-right.png')}
+                        source={require('../../../assets/sunbot-right.png')}
                         resizeMode='contain'
                     />
                     <View
@@ -285,7 +409,7 @@ export default class LessonList extends Component {
                             <Image
                                 style={styles.icon}
                                 resizeMode='contain'
-                                source={require('../../assets/ic-stone-play.png')}
+                                source={require('../../../assets/ic-stone-play.png')}
                             />
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -297,7 +421,7 @@ export default class LessonList extends Component {
                             <Image
                                 style={styles.icon}
                                 resizeMode='contain'
-                                source={require('../../assets/ic-stone-movie.png')}
+                                source={require('../../../assets/ic-stone-movie.png')}
                             />
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -306,11 +430,11 @@ export default class LessonList extends Component {
                             <Image
                                 style={styles.icon}
                                 resizeMode='contain'
-                                source={require('../../assets/ic-stone-about.png')}
+                                source={require('../../../assets/ic-stone-about.png')}
                             />
                         </TouchableOpacity>
                     </View>
-                </ImageBackground>
+                </ImageBackground> */}
             </ImageBackground>
         )
     }
@@ -337,10 +461,13 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
     },
     viewText: {
-        padding: 5,
+        position: 'absolute',
+        paddingLeft: 30,
         width: '50%',
-        height: '100%',
-        justifyContent: 'center'
+        height: '20%',
+        justifyContent: 'center',
+        left: 150,
+        bottom: 50
     },
     logo: {
         width: '20%',
@@ -362,7 +489,7 @@ const styles = StyleSheet.create({
     // },
     row: {
         width: Dimensions.get('window').width / 3 - 40,
-        height: 3 * Dimensions.get('window').height / 5 - 20,
+        height: 2.5 * Dimensions.get('window').height / 5 - 20,
         borderRadius: 50,
         alignItems: 'center',
         justifyContent: 'center',
@@ -388,12 +515,12 @@ const styles = StyleSheet.create({
         fontSize: Constant.NUMBER.FONT_SIZE_LARGE
     },
     bottomView: {
-        flex: 1,
         width: '100%',
-        height: '100%',
+        height: '20%',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
+        paddingRight: 10
         // paddingRight: 10,
         // paddingTop: 10,
         // backgroundColor: '#DDD'
