@@ -10,7 +10,8 @@ import {
     ImageBackground,
     Dimensions,
     WebView,
-    ScrollView
+    ScrollView,
+    Platform
 } from 'react-native'
 import Constant from '../../constants/Constant'
 import ImageSlider from 'react-native-image-slider';

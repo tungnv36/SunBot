@@ -196,9 +196,8 @@ export default class Courses extends Component {
                                             paddingTop: 18,
                                             fontSize: 16,
                                             color: '#8A3618',
-                                            fontFamily: 'zorque',
+                                            fontFamily: 'Pacifico',//Platform.OS==='ios'?'Pacifico':"r0c0i - Linotte Bold",
                                             fontWeight: 'bold',
-
                                         }}
                                     >
                                         {`Khoá ${index + 1}`}
@@ -314,7 +313,7 @@ export default class Courses extends Component {
                     <Text
                         style={{
                             fontSize: 18,
-                            fontFamily: 'Pacifico',
+                            fontFamily: 'Pacifico',//Platform.OS==='ios'?'Pacifico':"r0c0i - Linotte Bold",
                             color: '#000',
                         }}
                     >

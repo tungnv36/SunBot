@@ -894,7 +894,7 @@ export default class GamePlay extends Component {
                 <Text
                     style={{
                         fontSize: 24,
-                        fontFamily: 'Pacifico',
+                        fontFamily: 'Pacifico',//Platform.OS==='ios'?'Pacifico':"r0c0i - Linotte Bold",
                         fontWeight: 'bold',
                         color: '#000000'//'#1A67EB'//'#032730'
                     }}
@@ -904,7 +904,7 @@ export default class GamePlay extends Component {
                 <Text
                     style={{
                         fontSize: 20,
-                        fontFamily: 'Pacifico',
+                        fontFamily: 'Pacifico',//Platform.OS==='ios'?'Pacifico':"r0c0i - Linotte Bold",
                         fontWeight: 'bold',
                         color: '#000000'//'#1A67EB'//'#032730'
                     }}
@@ -984,7 +984,7 @@ export default class GamePlay extends Component {
                 <Text
                     style={{
                         fontSize: 24,
-                        fontFamily: 'Pacifico',
+                        fontFamily: 'Pacifico',//Platform.OS==='ios'?'Pacifico':"r0c0i - Linotte Bold",
                         fontWeight: 'bold',
                         color: '#000000'//'#1A67EB'//'#032730'
                     }}
@@ -994,7 +994,7 @@ export default class GamePlay extends Component {
                 <Text
                     style={{
                         fontSize: 20,
-                        fontFamily: 'Pacifico',
+                        fontFamily: 'Pacifico',//Platform.OS==='ios'?'Pacifico':"r0c0i - Linotte Bold",
                         fontWeight: 'bold',
                         color: '#000000'//'#1A67EB'//'#032730'
                     }}

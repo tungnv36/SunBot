@@ -5,7 +5,8 @@ import {
     TouchableOpacity,
     StyleSheet,
     Image,
-    Dimensions
+    Dimensions,
+    Platform
 } from 'react-native'
 // import HTML from 'react-native-render-html';
 

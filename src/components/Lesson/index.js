@@ -11,7 +11,8 @@ import {
     Dimensions,
     WebView,
     ScrollView,
-    Animated
+    Animated,
+    Platform
 } from 'react-native'
 import Constant from '../../constants/Constant'
 import ImageSlider from 'react-native-image-slider';
@@ -202,7 +203,8 @@ export default class Lesson extends Component {
                                 <Text
                                     style={{
                                         fontSize: 14,
-                                        color:'#FFF'
+                                        color:'#FFF',
+                                        fontFamily: 'Pacifico',//Platform.OS==='ios'?'Pacifico':"r0c0i - Linotte Bold"
                                     }}
                                 >
                                     Slide
@@ -228,7 +230,8 @@ export default class Lesson extends Component {
                                 <Text
                                     style={{
                                         fontSize: 14,
-                                        color:'#FFF'
+                                        color:'#FFF',
+                                        fontFamily: 'Pacifico',//Platform.OS==='ios'?'Pacifico':"r0c0i - Linotte Bold"
                                     }}
                                 >
                                     Play
@@ -252,7 +255,8 @@ export default class Lesson extends Component {
                                 <Text
                                     style={{
                                         fontSize: 14,
-                                        color:'#FFF'
+                                        color:'#FFF',
+                                        fontFamily: 'Pacifico',//Platform.OS==='ios'?'Pacifico':"r0c0i - Linotte Bold"
                                     }}
                                 >
                                     Back
@@ -282,7 +286,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         // marginTop: 10,
         fontSize: 22,
-        fontFamily: 'Pacifico',
+        fontFamily: 'Pacifico',//Platform.OS==='ios'?'Pacifico':"r0c0i - Linotte Bold",
         textAlign: 'center',
         color: '#FFF'
         // backgroundColor: '#FFF'

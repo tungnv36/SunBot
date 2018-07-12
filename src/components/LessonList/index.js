@@ -170,7 +170,7 @@ export default class LessonList extends Component {
                             fontSize: 22,
                             color: '#F00',
                             fontWeight: 'bold',
-                            fontFamily: 'Pacifico',
+                            fontFamily: 'Pacifico',//Platform.OS==='ios'?'Pacifico':"r0c0i - Linotte Bold",
                         }}
                     >
 
@@ -225,7 +225,7 @@ export default class LessonList extends Component {
                                                 paddingTop: 18,
                                                 fontSize: 16,
                                                 color: '#8A3618',
-                                                fontFamily: 'zorque'
+                                                fontFamily: 'Pacifico',//Platform.OS==='ios'?'Pacifico':"r0c0i - Linotte Bold"
                                             }}
                                         >
                                             {`Bài ${index + 1}`}
@@ -342,7 +342,7 @@ export default class LessonList extends Component {
                     <Text
                         style={{
                             fontSize: 18,
-                            fontFamily: 'Pacifico',
+                            fontFamily: 'Pacifico',//Platform.OS==='ios'?'Pacifico':"r0c0i - Linotte Bold",
                             color: '#000',
                         }}
                     >
@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: Constant.NUMBER.FONT_SIZE_22,
         fontWeight: 'bold',
-        fontFamily: 'Pacifico',
+        fontFamily: 'Pacifico',//Platform.OS==='ios'?'Pacifico':"r0c0i - Linotte Bold",
         color: '#FFF'
     },
     subTitle: {
