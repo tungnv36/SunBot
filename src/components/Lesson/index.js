@@ -12,27 +12,31 @@ import {
     WebView,
     ScrollView,
     Animated,
-    Platform
+    Platform,
+    StatusBar
 } from 'react-native'
 import Constant from '../../constants/Constant'
 import ImageSlider from 'react-native-image-slider';
 import { BlurView, VibrancyView } from 'react-native-blur';
+import Immersive from 'react-native-immersive'
 import CallApi from '../../Api/CallApi';
 
 export default class Lesson extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            arr_images: [
-                // 'https://placeimg.com/640/640/nature',
-                // 'https://placeimg.com/640/640/people',
-                // 'https://placeimg.com/640/640/animals',
-                // 'https://placeimg.com/640/640/beer',
-            ],
+            arr_images: [],
             arr_info: [],
             position: 1,
             interval: null,
             bottomSunBot: new Animated.Value(0),
+        }
+
+        if (Platform.OS === 'android') {
+            StatusBar.setHidden(true)
+
+            Immersive.on()
+            Immersive.setImmersive(true)
         }
     }
 
@@ -137,7 +141,7 @@ export default class Lesson extends Component {
                             width: 7 * Dimensions.get('window').width / 10,
                             height: 7.5 * Dimensions.get('window').height / 10,
                             marginTop: -15,
-                            zIndex: 1,
+                            // zIndex: 1,
                             alignItems: 'center',
                         }}
                         source={require('../../../assets/new-pannel-lesson.png')}
@@ -308,6 +312,7 @@ const styles = StyleSheet.create({
         left: 20,
         width: '25%',
         height: '35%',
+        zIndex: 10,
         // backgroundColor: '#FFF'
     },
     button: {
@@ -324,7 +329,8 @@ const styles = StyleSheet.create({
         bottom: 20,
         right: 20,
         width: '100%',
-        height: '100%'
+        height: '100%',
+        zIndex: 10,
     },
     viewButton: {
         position: 'absolute',
@@ -332,6 +338,7 @@ const styles = StyleSheet.create({
         bottom: 60,
         width: '90%',
         height: '70%',
+        zIndex: 10,
         // backgroundColor: '#FFF'
     },
     menuButton: {
@@ -339,5 +346,6 @@ const styles = StyleSheet.create({
         height: '30%',
         marginBottom: 2,
         marginTop: 2,
+        zIndex: 10
     }
 });

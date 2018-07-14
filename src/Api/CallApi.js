@@ -29,7 +29,7 @@ const createAPI = (baseURL = API.BASE_URL) => {
     const getCourses = () => api.get(`${API.GET_COURSES}`);
     const getLesson = (CoursesID) => api.get(`${API.GET_LESSON}/${CoursesID}`);
     const getSlider = (LessonID) => api.get(`${API.GET_SLIDER}/${LessonID}`);
-    const getMap = (LessonID) => api.get(`${API.GET_MAP}/${LessonID}`);
+    const getMap = (LessonID, Level) => api.get(`${API.GET_MAP}/${LessonID}/${Level}`);
     
     
     return {

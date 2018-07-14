@@ -6,12 +6,20 @@ import {
     TouchableOpacity,
     WebView,
     Platform,
-    Image
+    Image,
+    StatusBar
 } from 'react-native'
+import Immersive from 'react-native-immersive'
 
 export default class PlayVideo extends Component {
     constructor(props) {
         super(props)
+        if (Platform.OS === 'android') {
+            StatusBar.setHidden(true)
+
+            Immersive.on()
+            Immersive.setImmersive(true)
+        }
     }
 
     render() {

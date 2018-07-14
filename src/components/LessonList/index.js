@@ -10,33 +10,28 @@ import {
     Dimensions,
     Animated,
     Platform,
-    ActivityIndicator
+    ActivityIndicator,
+    StatusBar
 } from 'react-native'
 import Constant from '../../constants/Constant'
 import { BlurView, VibrancyView } from 'react-native-blur';
+import Immersive from 'react-native-immersive'
 import CallApi from '../../Api/CallApi';
 
 export default class LessonList extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            arr_lesson: [
-                // { key: '0', name: 'Bài 1', background: '#1176BF' },
-                // { key: '1', name: 'Bài 2', background: '#F31527' },
-                // { key: '2', name: 'Bài 3', background: '#82B354' },
-                // { key: '3', name: 'Bài 4', background: '#8D59B9' },
-                // { key: '4', name: 'Bài 5', background: '#D9524D' },
-                // { key: '5', name: 'Bài 6', background: '#1176BF' },
-                // { key: '6', name: 'Bài 7', background: '#F31527' },
-                // { key: '7', name: 'Bài 8', background: '#82B354' },
-                // { key: '8', name: 'Bài 9', background: '#8D59B9' },
-                // { key: '9', name: 'Bài 10', background: '#D9524D' },
-                // { key: '10', name: 'Bài 11', background: '#1176BF' },
-                // { key: '11', name: 'Bài 12', background: '#F31527' },
-            ],
+            arr_lesson: [],
             bottomSunBot: new Animated.Value(0),
             scaleItem: new Animated.Value(0),
             isLoading: true,
+        }
+        if (Platform.OS === 'android') {
+            StatusBar.setHidden(true)
+
+            Immersive.on()
+            Immersive.setImmersive(true)
         }
     }
 

@@ -24,18 +24,7 @@ export default class Courses extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            arr_courses: [
-                // {key: '0', name: 'Khoá 1', background: '#1176BF'},
-                // {key: '1', name: 'Khoá 2', background: '#F31527'},
-                // {key: '2', name: 'Khoá 3', background: '#82B354'},
-                // {key: '3', name: 'Khoá 4', background: '#8D59B9'},
-                // {key: '4', name: 'Khoá 5', background: '#D9524D'},
-                // {key: '5', name: 'Khoá 1', background: '#1176BF'},
-                // {key: '6', name: 'Khoá 2', background: '#F31527'},
-                // {key: '7', name: 'Khoá 3', background: '#82B354'},
-                // {key: '8', name: 'Khoá 4', background: '#8D59B9'},
-                // {key: '9', name: 'Khoá 5', background: '#D9524D'},
-            ],
+            arr_courses: [],
             viewRef: null,
             bottomSunBot: new Animated.Value(0),
             scaleItem: new Animated.Value(0),

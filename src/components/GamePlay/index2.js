@@ -13,17 +13,19 @@ import {
     Animated,
     ActivityIndicator,
     PanResponder,
-    BackHandler
+    BackHandler,
+    StatusBar
 } from 'react-native'
 import TimerMixin from 'react-timer-mixin'
-import { CLIENT_ERROR } from 'apisauce';
-import { BlurView, VibrancyView } from 'react-native-blur';
+import { CLIENT_ERROR } from 'apisauce'
+import { BlurView, VibrancyView } from 'react-native-blur'
 import Svg, {
     Polyline, Stop
-} from 'react-native-svg';
-import { PlaySound, StopSound, PlaySoundRepeat, PlaySoundMusicVolume } from 'react-native-play-sound';
+} from 'react-native-svg'
+import Immersive from 'react-native-immersive'
+import { PlaySound, StopSound, PlaySoundRepeat, PlaySoundMusicVolume } from 'react-native-play-sound'
 import Constant from '../../constants/Constant'
-import CallApi from '../../Api/CallApi';
+import CallApi from '../../Api/CallApi'
 
 const w = 7 * (Dimensions.get('window').width - 45) / 80
 const h = 9 * (Dimensions.get('window').height - 10) / 80
@@ -40,6 +42,7 @@ const vatCanType = 3
 class DrawSquare extends Component {
     constructor(props) {
         super(props);
+        // console.log('IMG: ', this.props)
     }
 
     componentWillMount() {
@@ -57,13 +60,11 @@ class DrawSquare extends Component {
         return (
             <View
                 style={{
-                    // borderWidth: 0.5,
                     position: 'absolute',
                     width: w,
                     height: h,
                     left: this.props.col * w + startX,
                     bottom: this.props.row * h + startY,
-                    // backgroundColor: this.props.row % 2 === 0 ? this.props.index % 2 === 0 ? '#E9E9E9' : '#D7D7D7' : this.props.index % 2 === 0 ? '#D7D7D7' : '#E9E9E9',
                     alignItems: 'center',
                     justifyContent: 'center',
                 }}
@@ -81,7 +82,6 @@ class DrawSquare extends Component {
                                 width: w - 2,
                                 height: h - 2,
                                 backgroundColor: this.props.row % 2 === 0 ? this.props.index % 2 === 0 ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.6)' : this.props.index % 2 === 0 ? 'rgba(255, 255, 255, 0.6)' : 'rgba(255, 255, 255, 0.3)',
-                                // margin: 5,
                                 borderRadius: 5
                             }}
                         />
@@ -93,19 +93,6 @@ class DrawSquare extends Component {
                             borderRadius: 5
                         }}
                     >
-                        {/* <View
-                            style={{
-                                width: w,
-                                height: h,
-                                backgroundColor: this.props.row % 2 === 0 ? this.props.index % 2 === 0 ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.6)' : this.props.index % 2 === 0 ? 'rgba(255, 255, 255, 0.6)' : 'rgba(255, 255, 255, 0.3)',
-                                position: 'absolute',
-                                left: -1,
-                                top: -1,
-                                bottom: 1,
-                                right: 1,
-                                borderRadius: 5
-                            }}
-                        /> */}
                         <Image
                             style={{
                                 width: w,
@@ -136,8 +123,8 @@ export default class GamePlay extends Component {
             impediments: [],
             itemGo: [],//[{ key: '0', style: 'first', c: 0, r: 0, d: 0, src: require('../../../assets/ic-up.png') }],
             numOfCol: 8,
-            posBeginX: [],
-            posBeginY: [],
+            posBeginX: 0,
+            posBeginY: 0,
             posBotX: new Animated.Value(w * 0 + w / 2 - wBot / 2 + startX),
             posBotY: new Animated.Value(h * 0 + h / 2 - hBot / 2 + startY),
             posSelected: new Animated.Value(0),
@@ -150,12 +137,20 @@ export default class GamePlay extends Component {
             points: '',
             isPlay: true,
             count: 0,
-            src: [],
+            src: '',
             level: 1,
-            isMounted: false
+            isMounted: false,
+            description: ''
         }
         this.deg = new Animated.Value(0);
         PlaySoundRepeat('sound')
+
+        if (Platform.OS === 'android') {
+            StatusBar.setHidden(true)
+
+            Immersive.on()
+            Immersive.setImmersive(true)
+        }
     }
 
     componentWillMount() {
@@ -168,7 +163,7 @@ export default class GamePlay extends Component {
         this.setState({
             isMounted: true,
         })
-        this.getMap()
+        this.getMap(this.state.level)
         // this.initArray()
     }
 
@@ -187,16 +182,19 @@ export default class GamePlay extends Component {
         // this.getMap(items)
     }
 
-    getMap = async () => {//impediments
+    getMap = async (level) => {//impediments
         const { navigation } = this.props;
         const key = navigation.getParam('lessonId', '0');
-        console.log('KKKK', '\\')
         const api = CallApi.createAPI()
-        const taskGet = await api.getMap(key)
-        var posX = []
-        var posY = []
-        var src = []
+        const taskGet = await api.getMap(key, level)
+        var posX = 0
+        var posY = 0
+        var src = ''
+        console.log('KKKK', taskGet)
         if (taskGet.ok) {
+            this.setState({
+                level
+            })
             console.log('taskGetMap', taskGet.data)
             var data = taskGet.data
             if (data === null) {
@@ -204,51 +202,75 @@ export default class GamePlay extends Component {
                     alert('Không có khoá học nào')
                 })
             } else {
-                var items = []
-                for (let i = 0; i < data.length; i++) {
-                    var item = []
-                    for (let i = 0; i < 64; i++) {
-                        item.push({
-                            id: (new Date()).getTime() + i,
-                            imageUrl: '',
-                            indexOfCell: i,
-                            mapId: this.props.lessonId,
-                            type: 100
-                        })
-                    }
-
-                    for (let j = 0; j < data[i].impediments.length; j++) {
-                        item.splice(data[i].impediments[j].indexOfCell, 1, {
-                            id: data[i].impediments[j].id,
-                            imageUrl: data[i].impediments[j].imageUrl,
-                            indexOfCell: data[i].impediments[j].indexOfCell,
-                            mapId: data[i].impediments[j].mapId,
-                            type: data[i].impediments[j].type !== undefined ? data[i].impediments[j].type : sunBotType
-                        })
-                        console.log('HHHH: ', data[i].impediments[j])
-                        if (data[i].impediments[j].type === undefined || data[i].impediments[j].type === sunBotType) {
-                            posX.push(data[i].impediments[j].indexOfCell % this.state.numOfCol)
-                            posY.push(parseInt(data[i].impediments[j].indexOfCell / this.state.numOfCol))
-                            src.push(`${data[i].impediments[j].imageUrl}?w=${w}&h=${h}`)
-                        }
-                    }
-                    
-                    items.push({
-                        item,
-                        description: data[i].description,
-                        level: data[i].level
+                // var items = []
+                var item = []
+                for (let j = 0; j < 64; j++) {
+                    item.push({
+                        id: (new Date()).getTime() + j,
+                        imageUrl: '',
+                        indexOfCell: j,
+                        mapId: this.props.lessonId,
+                        type: 100
                     })
                 }
-                console.log('posX: ', posX)
-                    console.log('posY: ', posY)
-                    console.log('src: ', src)
+                for (let j = 0; j < data.impediments.length; j++) {
+                    item.splice(data.impediments[j].indexOfCell, 1, {
+                        id: data.impediments[j].id,
+                        imageUrl: data.impediments[j].imageUrl,
+                        indexOfCell: data.impediments[j].indexOfCell,
+                        mapId: data.impediments[j].mapId,
+                        type: data.impediments[j].type !== undefined ? data.impediments[j].type : sunBotType
+                    })
+                    if (data.impediments[j].type === undefined || data.impediments[j].type === sunBotType) {
+                        posX = data.impediments[j].indexOfCell % this.state.numOfCol
+                        posY = parseInt(data.impediments[j].indexOfCell / this.state.numOfCol)
+                        src = `${data.impediments[j].imageUrl}?w=${w}&h=${h}`
+                    }
+                }
+
+                // for (let i = 0; i < data.length; i++) {
+                //     var item = []
+                //     for (let j = 0; j < 64; j++) {
+                //         item.push({
+                //             id: (new Date()).getTime() + j,
+                //             imageUrl: '',
+                //             indexOfCell: j,
+                //             mapId: this.props.lessonId,
+                //             type: 100
+                //         })
+                //     }
+
+                //     for (let j = 0; j < data[i].impediments.length; j++) {
+                //         item.splice(data[i].impediments[j].indexOfCell, 1, {
+                //             id: data[i].impediments[j].id,
+                //             imageUrl: data[i].impediments[j].imageUrl,
+                //             indexOfCell: data[i].impediments[j].indexOfCell,
+                //             mapId: data[i].impediments[j].mapId,
+                //             type: data[i].impediments[j].type !== undefined ? data[i].impediments[j].type : sunBotType
+                //         })
+                //         if (data[i].impediments[j].type === undefined || data[i].impediments[j].type === sunBotType) {
+                //             posX.push(data[i].impediments[j].indexOfCell % this.state.numOfCol)
+                //             posY.push(parseInt(data[i].impediments[j].indexOfCell / this.state.numOfCol))
+                //             src.push(`${data[i].impediments[j].imageUrl}?w=${w}&h=${h}`)
+                //         }
+                //     }
+                    
+                //     items.push({
+                //         item,
+                //         description: data[i].description,
+                //         level: data[i].level
+                //     })
+                //     // console.log('DADADADA: ', items)
+                // }
                 if (this.state.isMounted) {
                     this.setState({
-                        impediments: items,
+                        description: data.description,
+                        // level: data.level,
+                        impediments: item,
                         posBeginX: posX,
                         posBeginY: posY,
                         src,
-                        firstData: { key: '0', style: 'first', c: posX[this.state.level - 1], r: posY[this.state.level - 1], d: 0, src: require('../../../assets/ic-up.png') },
+                        firstData: { key: '0', style: 'first', c: posX, r: posY, d: 0, src: require('../../../assets/ic-up.png') },
                     }, () => {
                         console.log('impediments2', this.state.impediments)
                     })
@@ -262,14 +284,14 @@ export default class GamePlay extends Component {
                     const anim1 = Animated.timing(
                         this.state.posBotX,
                         {
-                            toValue: w * posX[this.state.level - 1] + w / 2 - wBot / 2 + startX,
+                            toValue: w * posX + w / 2 - wBot / 2 + startX,
                             duration: 10
                         }
                     )
                     const anim2 = Animated.timing(
                         this.state.posBotY,
                         {
-                            toValue: h * posY[this.state.level - 1] + h / 2 - hBot / 2 + startY,
+                            toValue: h * posY + h / 2 - hBot / 2 + startY,
                             duration: 10
                         }
                     )
@@ -447,7 +469,7 @@ export default class GamePlay extends Component {
             }
         }
         timeout = setTimeout(() => {
-            if (this.state.impediments[this.state.level - 1].item.length > 0) {
+            if (this.state.impediments.length > 0) {
                 this.setState({
                     isFinish: true
                 }, () => {
@@ -610,7 +632,7 @@ export default class GamePlay extends Component {
             case -3:
                 return r
             case -2:
-                if (r < parseInt(this.state.impediments[this.state.level - 1].item.length / this.state.numOfCol)) {
+                if (r < parseInt(this.state.impediments.length / this.state.numOfCol)) {
                     return r + 1
                 } else {
                     return r
@@ -626,7 +648,7 @@ export default class GamePlay extends Component {
             case 1:
                 return r
             case 2:
-                if (r < parseInt(this.state.impediments[this.state.level - 1].item.length / this.state.numOfCol)) {
+                if (r < parseInt(this.state.impediments.length / this.state.numOfCol)) {
                     return r + 1
                 } else {
                     return r
@@ -657,8 +679,8 @@ export default class GamePlay extends Component {
         var r2 = this.getRow(item.r, item.d)
         var i = r * this.state.numOfCol + c
         var state = 0//ok
-        
-        if (this.state.impediments[this.state.level - 1].item[i].type === vatCanType) {//là vật cản
+        // console.log('AJAJAJAAJAJ: ', this.state.impediments)
+        if (this.state.impediments[i].type === vatCanType) {//là vật cản
             c = item.c
             r = item.r
             state = 1//di vao vat can
@@ -741,7 +763,7 @@ export default class GamePlay extends Component {
         var r2 = r
         var i = r * this.state.numOfCol + c
         var state = 0//ok
-        if (this.state.impediments[this.state.level - 1].item[i].type === vatCanType) {//là vật cản
+        if (this.state.impediments[i].type === vatCanType) {//là vật cản
             c = item.c
             r = item.r
             state = 1//di vao vat can
@@ -772,14 +794,14 @@ export default class GamePlay extends Component {
         const anim1 = Animated.timing(
             this.state.posBotX,
             {
-                toValue: w * this.state.posBeginX[this.state.level - 1] + w / 2 - wBot / 2 + startX,
+                toValue: w * this.state.posBeginX + w / 2 - wBot / 2 + startX,
                 duration: 1
             }
         )
         const anim2 = Animated.timing(
             this.state.posBotY,
             {
-                toValue: h * this.state.posBeginY[this.state.level - 1] + h / 2 - hBot / 2 + startY,
+                toValue: h * this.state.posBeginY + h / 2 - hBot / 2 + startY,
                 duration: 1
             }
         )
@@ -838,7 +860,7 @@ export default class GamePlay extends Component {
         var item = this.state.itemGo[this.state.itemGo.length - 1]
         var r = item.r
         var c = item.c
-        var lastItem = this.state.impediments[this.state.level - 1].item[r * this.state.numOfCol + c]
+        var lastItem = this.state.impediments[r * this.state.numOfCol + c]//this.state.impediments[this.state.level - 1].item[r * this.state.numOfCol + c]
         var type = lastItem.type
         if (type === finishType) {
             return true
@@ -1170,7 +1192,7 @@ export default class GamePlay extends Component {
                     onResponderRelease={this.onRelease.bind(this)}
                 />
 
-                {this.state.impediments.length > 0 ? this.state.impediments[this.state.level - 1].item.map((item, index) =>
+                {this.state.impediments.length > 0 ? this.state.impediments.map((item, index) =>
                     <DrawSquare
                         col={item.indexOfCell % this.state.numOfCol}
                         row={parseInt(item.indexOfCell / this.state.numOfCol)}
@@ -1190,7 +1212,7 @@ export default class GamePlay extends Component {
                         zIndex: 2,
                         transform: [{ rotate: interpolateRotation }]
                     }}
-                    source={this.state.src[this.state.level - 1] === '' ? require('../../../assets/sunbot-icon.png') : { uri: this.state.src[this.state.level - 1] }}
+                    source={this.state.src === '' ? require('../../../assets/sunbot-icon.png') : { uri: this.state.src }}
                     // source={{ uri: `${this.state.impediments[]}?w=${w}&h=${h}` }}
                     resizeMode='cover'
                 >
@@ -1224,25 +1246,29 @@ export default class GamePlay extends Component {
     }
 
     backLevel() {
-        if (this.state.level > 1) {
-            this.setState({
-                level: this.state.level - 1,
-                firstData: { key: '0', style: 'first', c: this.state.posBeginX[this.state.level - 2], r: this.state.posBeginY[this.state.level - 2], d: 0, src: require('../../../assets/ic-up.png') },
-            }, () => {
-                this.clearGame()
-            })
-        }
+        this.getMap(this.state.level - 1)
+        // if (this.state.level > 1) {
+        //     this.setState({
+        //         level: this.state.level - 1,
+        //         // firstData: { key: '0', style: 'first', c: this.state.posBeginX, r: this.state.posBeginY, d: 0, src: require('../../../assets/ic-up.png') },
+        //     }, () => {
+        //         this.clearGame()
+        //         this.getMap(this.state.level - 1)
+        //     })
+        // }
     }
 
     nextLevel() {
-        if (this.state.level < this.state.impediments.length) {
-            this.setState({
-                level: this.state.level + 1,
-                firstData: { key: '0', style: 'first', c: this.state.posBeginX[this.state.level], r: this.state.posBeginY[this.state.level], d: 0, src: require('../../../assets/ic-up.png') },
-            }, () => {
-                this.clearGame()
-            })
-        }
+        this.getMap(this.state.level + 1)
+        // if (this.state.level < this.state.impediments.length) {
+        //     this.setState({
+        //         level: this.state.level + 1,
+        //         // firstData: { key: '0', style: 'first', c: this.state.posBeginX, r: this.state.posBeginY, d: 0, src: require('../../../assets/ic-up.png') },
+        //     }, () => {
+        //         this.clearGame()
+        //         this.getMap(this.state.level + 1)
+        //     })
+        // }
     }
 
     render() {
@@ -1347,7 +1373,8 @@ export default class GamePlay extends Component {
                                 fontWeight: 'bold',
                             }}
                         >
-                            {this.state.impediments.length > 0 ? this.state.impediments[this.state.level - 1].level : ''}
+                            {this.state.level}
+                            {/* {this.state.impediments.length > 0 ? this.state.impediments.level : ''} */}
                         </Text>
                         <TouchableOpacity
                             style={styles.NBButton}
@@ -1387,7 +1414,8 @@ export default class GamePlay extends Component {
                                     textAlign: 'center',
                                 }}
                             >
-                                {this.state.impediments.length > 0 ? this.state.impediments[this.state.level - 1].description : ''}
+                                {this.state.description}
+                                {/* {this.state.impediments.length > 0 ? this.state.impediments[this.state.level - 1].description : ''} */}
                             </Text>
                         </ScrollView>
                     </ImageBackground>

@@ -6,8 +6,10 @@ import {
     StyleSheet,
     Image,
     Dimensions,
-    Platform
+    Platform,
+    StatusBar
 } from 'react-native'
+import Immersive from 'react-native-immersive'
 // import HTML from 'react-native-render-html';
 
 const html = ``
@@ -19,6 +21,12 @@ export default class Slide extends Component {
         const content = navigation.getParam('content', '');
         console.log(content);
         html = content
+        if (Platform.OS === 'android') {
+            StatusBar.setHidden(true)
+
+            Immersive.on()
+            Immersive.setImmersive(true)
+        }
     }
 
     render() {
